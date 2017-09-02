@@ -7,15 +7,40 @@ import Settings from './settings_container'
 import Controller from './controller_container'
 import Member from './member_container'
 
-export default () => {
+export default (props) => {
+  const user = props.user
+  if (!user) {
+    return <Login />
+  }
+
   return (
     <BrowserRouter>
       {renderRoutes([
-        { component: Login, exact: true, path: '/' },
-        { component: Settings, exact: true, path: '/settings' },
-        { component: Controller, exact: true, path: '/:eventKey/controller' },
-        { component: () => <div>screen</div>, exact: true, path: '/:eventKey/screen' },
-        { component: Member, exact: true, path: '/:eventKey/m/:memberKey/' },
+        {
+          path: '/login',
+          component: Login,
+          exact: true,
+        },
+        {
+          path: '/settings',
+          component: () => <Settings {...props} />,
+          exact: true,
+        },
+        {
+          path: '/:eventKey/controller',
+          component: ({ match }) => <Controller match={match} {...props} />,
+          exact: true,
+        },
+        {
+          path: '/:eventKey/screen',
+          component: ({ match }) => <div>screen</div>,
+          exact: true,
+        },
+        {
+          path: '/:eventKey/m/:memberKey/',
+          component: ({ match }) => <Member match={match} {...props} />,
+          exact: true,
+        },
       ])}
     </BrowserRouter>
   )

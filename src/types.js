@@ -1,9 +1,7 @@
 export type ChoiceType = 'a' | 'b' | 'c' | 'd'
-export type OwnerType = {
-  events: {
-    [eventKey: string]: boolean,
-  },
-}
+
+export type UserType = { uid: string, displayName: string, photoURL: string }
+
 export type QuizType = {
   quizTitle: string,
   quizContents: Array<{
@@ -24,6 +22,11 @@ export type EventStatusType = {
   quizContentIndex: ?number,
   members: { [memberKey: string]: boolean },
 }
+export type OwnerType = {
+  events: { [eventKey: string]: EventType },
+  eventStatus: EventStatusType,
+}
+
 export type AnswersType = {
   [quizKey: string]: Array<?ChoiceType>,
 }
@@ -32,8 +35,6 @@ export type EventMemberType = {
 }
 export type DataType = {
   owners: { [ownerKey: string]: OwnerType },
-  events: { [eventKey: string]: EventType },
-  eventStatus: { [ownerKey: string]: EventStatusType },
   eventMembers: {
     [eventKey: string]: {
       [memberKey: string]: EventMemberType,

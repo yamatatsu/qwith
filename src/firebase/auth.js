@@ -1,3 +1,5 @@
+import type { UserType } from '../types'
+
 const provider = new firebase.auth.GoogleAuthProvider()
 
 const signInWithPopup = () =>
@@ -9,4 +11,9 @@ const signInWithPopup = () =>
       console.error(`auth error: ${{ errorCode, errorMessage, email, credential }}`)
     })
 
-export default signInWithPopup
+type CallbackType = (props: UserType) => void
+const observe = (callback: CallbackType) => {
+  firebase.auth().onAuthStateChanged(callback);
+}
+
+export { signInWithPopup, observe }
