@@ -2,8 +2,10 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 
 import './index.css'
-import AppContainer from './containers/AppContainer'
+import initializeFirebase from './firebase/initialize'
+import Router from './containers/Router'
 import registerServiceWorker from './registerServiceWorker'
 
-ReactDOM.render(<AppContainer />, document.getElementById('root'))
+initializeFirebase()
+ReactDOM.render(<Router />, document.getElementById('root'))
 registerServiceWorker()
