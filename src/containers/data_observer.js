@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import _pick from 'lodash/pick'
 
 import { observe } from '../firebase/auth'
 import Router from './Router'
@@ -16,9 +17,9 @@ class Container extends Component<PropsType, StateType> {
   }
 
   componentWillMount() {
-    observe(user => {
-      const { uid, displayName, photoURL } = user
-      this.setState({ ...this.state, user: { uid, displayName, photoURL } })
+    observe(_user => {
+      const user = _user && _pick(_user, ['uid', 'displayName', 'photoURL'])
+      this.setState({ ...this.state, user: user })
     })
   }
 
