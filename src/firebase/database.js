@@ -16,5 +16,9 @@ export const observeOwner = (ownerKey: string, callback: (owner: OwnerType) => v
 }
 
 export const setEventStatusQuizKey = (ownerKey: string, eventKey: string, quizKey: string) => {
-  getOwnerRef(ownerKey).child(`events/${eventKey}/eventStatus/quizKey`).set(quizKey)
+  getOwnerRef(ownerKey).child('eventStatus').set({ eventKey, quizKey, quizContentIndex: 0 })
+}
+
+export const setEventStatusQuizContentIndex = (ownerKey: string, quizContentIndex: number) => {
+  getOwnerRef(ownerKey).child('eventStatus/quizContentIndex').set(quizContentIndex)
 }
