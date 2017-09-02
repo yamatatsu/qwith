@@ -3,30 +3,23 @@ export type ChoiceType = 'a' | 'b' | 'c' | 'd'
 
 export type UserType = { uid: string, displayName: string, photoURL: string }
 
-export type QuizType = {
-  quizTitle: string,
-  quizContents: Array<{
-    quizContentUid: string,
-    qText: string,
-    choices: { [choice: ChoiceType]: string },
-    answerChoice: ChoiceType,
-  }>,
+export type QuizContentType = {
+  quizContentUid: string,
+  qText: string,
+  choices: { [choice: ChoiceType]: string },
+  answerChoice: ChoiceType,
 }
+export type QuizType = { quizTitle: string, quizContents: QuizContentType[] }
 export type QuizesType = { [quizKey: string]: QuizType }
-export type EventType = {
-  eventTitle: string,
-  quizes: QuizesType,
-}
+export type EventType = { eventTitle: string, quizes: QuizesType }
+export type EventsType = { [eventKey: string]: EventType }
 export type EventStatusType = {
   eventKey: ?string,
   quizKey: ?string,
   quizContentIndex: ?number,
   members: { [memberKey: string]: boolean },
 }
-export type OwnerType = {
-  events: { [eventKey: string]: EventType },
-  eventStatus: EventStatusType,
-}
+export type OwnerType = { events: EventsType, eventStatus: EventStatusType }
 
 export type AnswersType = {
   [quizKey: string]: Array<?ChoiceType>,

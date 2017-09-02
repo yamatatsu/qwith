@@ -8,8 +8,14 @@ import Settings from './settings_container'
 import Controller from './controller_container'
 import Member from './member_container'
 
-export default (props) => {
-  const user = props.user
+import type { UserType, OwnerType } from '../types'
+
+type PropsType = {
+  user: ?UserType,
+  owner: ?OwnerType
+}
+export default (props: PropsType) => {
+  const { user, owner } = props
   if (!user) {
     return <Login />
   }
@@ -24,7 +30,7 @@ export default (props) => {
         },
         {
           path: '/settings',
-          component: () => <Settings {...props} />,
+          component: () => <Settings user={user} owner={owner} />,
           exact: true,
         },
         {
