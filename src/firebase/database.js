@@ -14,3 +14,7 @@ export const observeOwner = (ownerKey: string, callback: (owner: OwnerType) => v
     callback(snapshot.val())
   })
 }
+
+export const setEventStatusQuizKey = (ownerKey: string, eventKey: string, quizKey: string) => {
+  getOwnerRef(ownerKey).child(`events/${eventKey}/eventStatus/quizKey`).set(quizKey)
+}

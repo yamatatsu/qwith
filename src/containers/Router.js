@@ -35,7 +35,7 @@ export default (props: PropsType) => {
         },
         {
           path: '/:eventKey/controller',
-          component: ({ match }) => <Controller match={match} {...props} />,
+          component: ({ match }) => <Controller match={match} user={user} owner={owner} />,
           exact: true,
         },
         {
