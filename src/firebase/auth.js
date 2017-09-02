@@ -1,3 +1,4 @@
+// @flow
 import type { UserType } from '../types'
 
 const provider = new firebase.auth.GoogleAuthProvider()

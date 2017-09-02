@@ -1,3 +1,4 @@
+// @flow
 export type ChoiceType = 'a' | 'b' | 'c' | 'd'
 
 export type UserType = { uid: string, displayName: string, photoURL: string }

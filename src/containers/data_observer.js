@@ -1,3 +1,4 @@
+// @flow
 import React, { Component } from 'react'
 import _pick from 'lodash/pick'
 
