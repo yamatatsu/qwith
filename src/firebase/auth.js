@@ -17,8 +17,8 @@ const signInWithPopup = () =>
     })
 
 type CallbackType = (props: UserType) => void
-const observe = (callback: CallbackType) => {
+const observeAuth = (callback: CallbackType) => {
   auth.onAuthStateChanged(callback)
 }
 
-export { signInWithPopup, observe }
+export { signInWithPopup, observeAuth }

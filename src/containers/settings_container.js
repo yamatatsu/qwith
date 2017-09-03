@@ -2,19 +2,34 @@
 import React, { Component } from 'react'
 import _get from 'lodash/get'
 
+import { observeAuth } from '../firebase/auth'
+import { observeOwner } from '../firebase/database'
 import Page from '../components/pages/settings'
 
-import type { UserType, OwnerType } from '../types'
+import type { OwnerType } from '../types'
 
-type PropsType = {
-  user: UserType,
+type PropsType = {}
+type StateType = {
   owner: ?OwnerType,
 }
-type StateType = {}
 
 class Container extends Component<PropsType, StateType> {
+  state = {
+    owner: null,
+  }
+
+  componentWillMount() {
+    observeAuth(_user => {
+      const ownerKey = _get(_user, 'uid')
+
+      observeOwner(ownerKey, (owner) => {
+        this.setState({ ...this.state, owner })
+      })
+    })
+  }
+
   render() {
-    const events = _get(this.props.owner, 'events')
+    const events = _get(this.state.owner, 'events')
     return <Page events={events} />
   }
 }
