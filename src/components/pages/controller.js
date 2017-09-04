@@ -1,36 +1,30 @@
 // @flow
 import React from 'react'
-import _map from 'lodash/map'
 
-import type { EventType, QuizesType, EventStatusType } from '../../types'
+import type { EventType, QuizType, EventStatusType } from '../../types'
 
-type QuizeSelecterPropsType = {
+type EventFacilitatorPropsType = {
   event: EventType,
-  quizes: QuizesType,
+  quiz: QuizType,
   startQuiz: Function,
 }
-export const QuizeSelecter = ({ quizes, event, startQuiz }: QuizeSelecterPropsType) => {
+export const EventFacilitator = ({ quiz, event, startQuiz }: EventFacilitatorPropsType) => {
   return (
     <div>
       <h1>{event.eventTitle}</h1>
-      {_map(event.quizKeys, (quizKey) => (
-        <div key={quizKey}>
-          <button onClick={() => startQuiz(quizKey)}>
-            {quizes[quizKey].quizTitle}を始める
-          </button>
-        </div>
-      ))}
+      <button onClick={() => startQuiz()}>
+        {quiz.quizTitle}を始める
+      </button>
     </div>
   )
 }
 
 type QuizeFacilitatorPropsType = {
   event: EventType,
-  quizes: QuizesType,
   eventStatus: EventStatusType,
   nextQuizContent: Function,
 }
-export const QuizeFacilitator = ({ event, quizes, eventStatus, startQuiz, nextQuizContent }: QuizeFacilitatorPropsType) => {
+export const QuizeFacilitator = ({ event, eventStatus, nextQuizContent }: QuizeFacilitatorPropsType) => {
   return (
     <div>
       <h1>{event.eventTitle}</h1>

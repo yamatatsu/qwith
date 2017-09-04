@@ -5,13 +5,13 @@ import _get from 'lodash/get'
 import { observeAuth } from '../firebase/auth'
 import { observeOwner, observeEventStatus } from '../firebase/database'
 
-import { setEventStatusQuiz, setEventStatusQuizContent } from '../firebase/database'
-import { QuizeSelecter, QuizeFacilitator } from '../components/pages/controller'
+import { setEventStatusQuiz } from '../firebase/database'
+import { EventFacilitator, QuizeFacilitator } from '../components/pages/controller'
 
-import type { MatchType, OwnerType, EventStatusType } from '../types'
+import type { EventKeyType, MatchType, OwnerType, EventType, QuizType, EventStatusType } from '../types'
 
 type PropsType = {
-  match: MatchType<{ eventKey: string }>,
+  match: MatchType<{ eventKey: EventKeyType }>,
 }
 type StateType = {
   owner: ?OwnerType,
@@ -46,23 +46,28 @@ class Container extends Component<PropsType, StateType> {
     if (!owner) return null // TODO: クルクル
 
     const { events, quizes } = owner
-    const event = events[eventKey]
 
-    if (!quizes || !event.quizKeys) return <div>クイズが未登録</div>
+    const event: ?EventType = events[eventKey]
 
-    const startQuiz = (quizKey) => setEventStatusQuiz(eventKey, quizKey, quizes[quizKey].quizContents[0])
+    if (!event) throw new Error("404にしたい") // TODO:
+
+    if (!quizes) return <div>クイズが未登録</div>
+    const quiz: ?QuizType = quizes[eventKey]
+    if (!quiz) return <div>クイズが未登録です</div>
+
+    const startQuiz = () => setEventStatusQuiz(eventKey, 0, quiz.quizContents[0])
     if (!eventStatus) {
-      return <QuizeSelecter {...{quizes, event, startQuiz}} />
+      return <EventFacilitator {...{event, quiz, startQuiz}} />
     }
 
-    const { quizKey, quizContentIndex } = eventStatus
+    const { quizContentIndex } = eventStatus
 
     const nextQuizContent = () => {
       const nextQuizContentIndex = quizContentIndex + 1
-      setEventStatusQuizContent(eventKey, nextQuizContentIndex, quizes[quizKey].quizContents[nextQuizContentIndex])
+      setEventStatusQuiz(eventKey, nextQuizContentIndex, quiz.quizContents[nextQuizContentIndex])
     }
 
-    return <QuizeFacilitator {...{ event, quizes, eventStatus, nextQuizContent }}  />
+    return <QuizeFacilitator {...{ event, eventStatus, nextQuizContent }}  />
   }
 }
 

@@ -1,6 +1,13 @@
 // @flow
 export type ChoiceType = 'a' | 'b' | 'c' | 'd'
 
+const OwnerKeyClass = class extends String {}
+const EventKeyClass = class extends String {}
+const MemberKeyClass = class extends String {}
+export type OwnerKeyType = Class<OwnerKeyClass>
+export type EventKeyType = Class<EventKeyClass>
+export type MemberKeyType = Class<MemberKeyClass>
+
 export type UserType = { uid: string, displayName: string, photoURL: string }
 
 export type QuizContentType = {
@@ -8,31 +15,28 @@ export type QuizContentType = {
   choices: { [choice: ChoiceType]: string },
   answerChoice: ChoiceType,
 }
+
 export type QuizType = { quizTitle: string, quizContents: QuizContentType[] }
-export type QuizesType = { [quizKey: string]: QuizType }
-export type EventType = { eventTitle: string, quizKeys: string[] }
-export type EventsType = { [eventKey: string]: EventType }
+export type QuizesType = { [eventKey: EventKeyType]: QuizType }
+export type EventType = { eventTitle: string }
+export type EventsType = { [eventKey: EventKeyType]: EventType }
 export type OwnerType = {
   events: EventsType,
   quizes?: QuizesType,
 }
 
-export type AnswersType = {
-  [quizKey: string]: Array<?ChoiceType>,
-}
 export type MemberType = {
-  answers: AnswersType,
+  quiz: { answers: Array<?ChoiceType> },
 }
 export type EventStatusType = {
-  quizKey: string,
   quizContentIndex: number,
   quizContent: QuizContentType,
-  members: { [memberKey: string]: MemberType },
+  members: { [memberKey: MemberKeyType]: MemberType },
 }
 
 export type DataType = {
-  owners: { [ownerKey: string]: OwnerType },
-  eventStatus: { [eventKey: string]: ?EventStatusType },
+  owners: { [ownerKey: OwnerKeyType]: OwnerType },
+  eventStatus: { [eventKey: EventKeyType]: ?EventStatusType },
 }
 
 export type MatchType<P> = {

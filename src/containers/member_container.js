@@ -6,16 +6,16 @@ import _get from 'lodash/get'
 import { observeEventStatus, pushMember, setAnswer } from '../firebase/database'
 import Page from '../components/pages/member'
 
-import type { MatchType, EventStatusType, ChoiceType } from '../types'
+import type { MatchType, EventKeyType, MemberKeyType, EventStatusType, ChoiceType } from '../types'
 
 const MEMBER_KEY_COOKIE_NAME = 'mk'
 
 type PropsType = {
-  match: MatchType<{ eventKey: string }>,
+  match: MatchType<{ eventKey: EventKeyType }>,
 }
 type StateType = {
   eventStatus: ?EventStatusType,
-  memberKey: ?string,
+  memberKey: ?MemberKeyType,
 }
 class Container extends Component<PropsType, StateType> {
   componentWillMount() {
@@ -34,15 +34,15 @@ class Container extends Component<PropsType, StateType> {
     const { eventStatus, memberKey } = this.state
 
     if (!memberKey) return null // TODO クルクル
-    if (!eventStatus || !eventStatus.quizKey) {
+    if (!eventStatus) {
       return <div>クイズ開始までお待ち下さい。</div>
     }
 
-    const { quizKey, quizContentIndex } = eventStatus
+    const { quizContentIndex } = eventStatus
 
-    const answer = (choice: ChoiceType) => setAnswer(eventKey, memberKey, quizKey, quizContentIndex, choice)
+    const answer = (choice: ChoiceType) => setAnswer(eventKey, memberKey, quizContentIndex, choice)
 
-    const myAnswer = _get(eventStatus, `members.${memberKey}.answers.${quizKey}.${quizContentIndex}`)
+    const myAnswer = _get(eventStatus, `members.${memberKey.toString()}.quiz.answers.${quizContentIndex}`)
 
     if (!myAnswer) {
       return <Page {...{ eventKey, memberKey, eventStatus, answer }} />
