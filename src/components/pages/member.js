@@ -1,15 +1,14 @@
 // @flow
 import React from 'react'
 
-import type { EventKeyType, MemberKeyType, EventStatusDataType } from '../../types'
+import type { EventStatusDataType, ChoiceType } from '../../types'
 
 type PropsType = {
-  eventKey: EventKeyType,
-  memberKey: MemberKeyType,
   eventStatus: EventStatusDataType,
+  myAnswer: ?ChoiceType,
   answer: Function,
 }
-export default ({ eventKey, memberKey, eventStatus, answer }: PropsType) => {
+export default ({ eventStatus, answer, myAnswer }: PropsType) => {
   const { quizContentIndex } = eventStatus
   return (
     <div>
@@ -17,11 +16,12 @@ export default ({ eventKey, memberKey, eventStatus, answer }: PropsType) => {
       <h3>{eventStatus.quizContent.qText}</h3>
       {['a', 'b', 'c', 'd'].map(choice => (
         <div key={choice}>
-          <button onClick={() => answer(choice)}>
+          <button onClick={() => answer(choice)} disabled={!!myAnswer}>
             {choice}: {eventStatus.quizContent.choices[choice]}
           </button>
         </div>
       ))}
+      {myAnswer && <div>あなたの回答： {myAnswer}</div>}
     </div>
   )
 }

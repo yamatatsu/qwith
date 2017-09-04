@@ -58,7 +58,7 @@ class Container extends Component<PropsType, StateType> {
 
     const { quizContent } = eventStatus
 
-    return <QuizeFacilitator {...{ event, quizContent, continueQuiz }}  />
+    return <QuizeFacilitator {...{ event, quizContent, continueQuiz: () => continueQuiz(eventStatus) }}  />
   }
 }
 

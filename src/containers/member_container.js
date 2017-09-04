@@ -1,12 +1,12 @@
 // @flow
 import React, { Component } from 'react'
 import Cookies from 'js-cookie'
-import _get from 'lodash/get'
 
-import { observeEventStatus, pushMember, setAnswer } from '../firebase/database'
+import { observeEventStatus, observeMember, pushMember } from '../firebase/database'
+import createMember from '../domain/entities/member'
 import Page from '../components/pages/member'
 
-import type { MatchType, EventKeyType, MemberKeyType, EventStatusDataType, ChoiceType } from '../types'
+import type { MatchType, EventKeyType, MemberKeyType, EventStatusDataType, MemberDataType } from '../types'
 
 const MEMBER_KEY_COOKIE_NAME = 'mk'
 
@@ -16,6 +16,7 @@ type PropsType = {
 type StateType = {
   eventStatus: ?EventStatusDataType,
   memberKey: ?MemberKeyType,
+  member: ?MemberDataType,
 }
 class Container extends Component<PropsType, StateType> {
   componentWillMount() {
@@ -27,32 +28,26 @@ class Container extends Component<PropsType, StateType> {
     const memberKey = Cookies.get(MEMBER_KEY_COOKIE_NAME) || pushMember(eventKey).key
     Cookies.set(MEMBER_KEY_COOKIE_NAME, memberKey, { expires: 30 })
     this.setState({ ...this.state, memberKey })
+
+    observeMember(eventKey, memberKey, (member) => {
+      this.setState({ ...this.state, member })
+    })
   }
 
   render() {
     const { eventKey } = this.props.match.params
-    const { eventStatus, memberKey } = this.state
+    const { eventStatus: eventStatusData, memberKey, member: memberData } = this.state
 
-    if (!memberKey) return null // TODO クルクル
-    if (!eventStatus) {
+    const member = createMember(eventKey, memberKey, eventStatusData, memberData)
+
+    if (member === 'has_no_member_key') return null // TODO クルクル
+    if (member === 'has_no_event_status') {
       return <div>クイズ開始までお待ち下さい。</div>
     }
 
-    const { quizContentIndex } = eventStatus
+    const { eventStatus, myAnswer, answer } = member
 
-    const answer = (choice: ChoiceType) => setAnswer(eventKey, memberKey, quizContentIndex, choice)
-
-    const myAnswer = _get(eventStatus, `members.${memberKey.toString()}.quiz.answers.${quizContentIndex}`)
-
-    if (!myAnswer) {
-      return <Page {...{ eventKey, memberKey, eventStatus, answer }} />
-    }
-
-    if (eventStatus.quizContent.answerChoice === myAnswer) {
-      return <div>正解！！</div>
-    } else {
-      return <div>はずれ。。。</div>
-    }
+    return <Page {...{ eventStatus, myAnswer, answer }} />
   }
 }
 

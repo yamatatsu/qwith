@@ -1,37 +1,42 @@
 // @flow
 import firebaseApp from './app'
 
-import type { EventKeyType, MemberKeyType, OwnerDataType, EventStatusDataType, QuizContentDataType, ChoiceType } from '../types'
+import type { EventKeyType, MemberKeyType, OwnerDataType, MemberDataType, EventStatusDataType } from '../types'
 
 const ref = firebaseApp.database().ref()
 
-const getOwnerRef = (ownerKey: string) => {
-  return ref.child(`owners/${ownerKey}`)
-}
+const getOwnerRef = (ownerKey: string) =>
+  ref.child(`owners/${ownerKey}`)
+
+const getEventStatusRef = (eventKey: EventKeyType) =>
+  ref.child(`eventStatus/${eventKey.toString()}`)
+
+const getMemberRef = (eventKey: EventKeyType, memberKey: MemberKeyType) =>
+  ref.child(`members/${eventKey.toString()}/${memberKey.toString()}`)
+
 export const observeOwner = (ownerKey: string, callback: (owner: OwnerDataType) => void) => {
   getOwnerRef(ownerKey).on('value', (snapshot) => {
     callback(snapshot.val())
   })
-}
-
-const getEventStatusRef = (eventKey: EventKeyType) => {
-  return ref.child(`eventStatus/${eventKey.toString()}`)
 }
 export const observeEventStatus = (eventKey: EventKeyType, callback: (eventStatus: EventStatusDataType) => void) => {
   getEventStatusRef(eventKey).on('value', (snapshot) => {
     callback(snapshot.val())
   })
 }
-export const setEventStatusQuiz = (eventKey: EventKeyType, quizContentIndex: number, quizContent: QuizContentDataType) => {
-  getEventStatusRef(eventKey).update({ quizContentIndex, quizContent })
+export const observeMember = (eventKey: EventKeyType, memberKey: MemberKeyType, callback: (member: MemberDataType) => void) => {
+  getMemberRef(eventKey, memberKey).on('value', (snapshot) => {
+    callback(snapshot.val())
+  })
 }
+
 export const updateEventStatus = (eventKey: EventKeyType, eventStatus: EventStatusDataType) => {
   getEventStatusRef(eventKey).update(eventStatus)
 }
-
-export const setAnswer = (eventKey: EventKeyType, memberKey: MemberKeyType, quizContentIndex: number, choice: ChoiceType) => {
-  getEventStatusRef(eventKey).child(`members/${memberKey.toString()}/quiz/answers/${quizContentIndex}`).set(choice)
+export const updateMember = (eventKey: EventKeyType, memberKey: MemberKeyType, member: MemberDataType) => {
+  getMemberRef(eventKey, memberKey).update(member)
 }
+
 export const pushMember = (eventKey: EventKeyType) => {
-  return getEventStatusRef(eventKey).child(`members`).push()
+  return ref.child(`members/${eventKey.toString()}`).push()
 }
