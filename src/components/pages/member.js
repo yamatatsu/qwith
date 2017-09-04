@@ -1,12 +1,12 @@
 // @flow
 import React from 'react'
 
-import type { EventKeyType, MemberKeyType, EventStatusType } from '../../types'
+import type { EventKeyType, MemberKeyType, EventStatusDataType } from '../../types'
 
 type PropsType = {
   eventKey: EventKeyType,
   memberKey: MemberKeyType,
-  eventStatus: EventStatusType,
+  eventStatus: EventStatusDataType,
   answer: Function,
 }
 export default ({ eventKey, memberKey, eventStatus, answer }: PropsType) => {

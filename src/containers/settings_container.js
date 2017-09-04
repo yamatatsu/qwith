@@ -6,11 +6,11 @@ import { observeAuth } from '../firebase/auth'
 import { observeOwner } from '../firebase/database'
 import Page from '../components/pages/settings'
 
-import type { OwnerType } from '../types'
+import type { OwnerDataType } from '../types'
 
 type PropsType = {}
 type StateType = {
-  owner: ?OwnerType,
+  owner: ?OwnerDataType,
 }
 
 class Container extends Component<PropsType, StateType> {

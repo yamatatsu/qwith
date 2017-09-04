@@ -10,33 +10,33 @@ export type MemberKeyType = Class<MemberKeyClass>
 
 export type UserType = { uid: string, displayName: string, photoURL: string }
 
-export type QuizContentType = {
+export type QuizContentDataType = {
   qText: string,
   choices: { [choice: ChoiceType]: string },
   answerChoice: ChoiceType,
 }
 
-export type QuizType = { quizTitle: string, quizContents: QuizContentType[] }
-export type QuizesType = { [eventKey: EventKeyType]: QuizType }
-export type EventType = { eventTitle: string }
-export type EventsType = { [eventKey: EventKeyType]: EventType }
-export type OwnerType = {
-  events: EventsType,
-  quizes?: QuizesType,
+export type QuizDataType = { quizTitle: string, quizContents: QuizContentDataType[] }
+export type QuizesDataType = { [eventKey: EventKeyType]: QuizDataType }
+export type EventDataType = { eventTitle: string }
+export type EventsDataType = { [eventKey: EventKeyType]: EventDataType }
+export type OwnerDataType = {
+  events: EventsDataType,
+  quizes?: QuizesDataType,
 }
 
-export type MemberType = {
+export type MemberDataType = {
   quiz: { answers: Array<?ChoiceType> },
 }
-export type EventStatusType = {
+export type EventStatusDataType = {
   quizContentIndex: number,
-  quizContent: QuizContentType,
-  members: { [memberKey: MemberKeyType]: MemberType },
+  quizContent: QuizContentDataType,
+  members?: { [memberKey: MemberKeyType]: MemberDataType },
 }
 
 export type DataType = {
-  owners: { [ownerKey: OwnerKeyType]: OwnerType },
-  eventStatus: { [eventKey: EventKeyType]: ?EventStatusType },
+  owners: { [ownerKey: OwnerKeyType]: OwnerDataType },
+  eventStatus: { [eventKey: EventKeyType]: ?EventStatusDataType },
 }
 
 export type MatchType<P> = {

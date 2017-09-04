@@ -4,18 +4,18 @@ import _get from 'lodash/get'
 
 import { observeAuth } from '../firebase/auth'
 import { observeOwner, observeEventStatus } from '../firebase/database'
-
-import { setEventStatusQuiz } from '../firebase/database'
+import createOwner from '../domain/entities/owner'
+import createEventStatus from '../domain/entities/eventStatus'
 import { EventFacilitator, QuizeFacilitator } from '../components/pages/controller'
 
-import type { EventKeyType, MatchType, OwnerType, EventType, QuizType, EventStatusType } from '../types'
+import type { EventKeyType, MatchType, OwnerDataType, EventStatusDataType } from '../types'
 
 type PropsType = {
   match: MatchType<{ eventKey: EventKeyType }>,
 }
 type StateType = {
-  owner: ?OwnerType,
-  eventStatus: ?EventStatusType,
+  owner: ?OwnerDataType,
+  eventStatus: ?EventStatusDataType,
 }
 
 class Container extends Component<PropsType, StateType> {
@@ -41,33 +41,24 @@ class Container extends Component<PropsType, StateType> {
 
   render() {
     const { eventKey } = this.props.match.params
-    const { owner, eventStatus } = this.state
+    const { owner: ownerData, eventStatus: eventStatusData } = this.state
 
-    if (!owner) return null // TODO: クルクル
+    const owner = createOwner(eventKey, ownerData)
+    const eventStatus = createEventStatus(eventStatusData)
 
-    const { events, quizes } = owner
+    if (owner === 'has_no_owner') return null // TODO: クルクル
+    if (owner === 'has_no_event') throw new Error("404にしたい") // TODO:
+    if (owner === 'has_no_quiz') return <div>クイズが未登録です</div>
 
-    const event: ?EventType = events[eventKey]
+    const { event, quiz, startQuiz, continueQuiz } = owner
 
-    if (!event) throw new Error("404にしたい") // TODO:
-
-    if (!quizes) return <div>クイズが未登録</div>
-    const quiz: ?QuizType = quizes[eventKey]
-    if (!quiz) return <div>クイズが未登録です</div>
-
-    const startQuiz = () => setEventStatusQuiz(eventKey, 0, quiz.quizContents[0])
-    if (!eventStatus) {
-      return <EventFacilitator {...{event, quiz, startQuiz}} />
+    if (eventStatus === 'not_started') {
+      return <EventFacilitator {...{ event, quiz, startQuiz }} />
     }
 
-    const { quizContentIndex } = eventStatus
+    const { quizContent } = eventStatus
 
-    const nextQuizContent = () => {
-      const nextQuizContentIndex = quizContentIndex + 1
-      setEventStatusQuiz(eventKey, nextQuizContentIndex, quiz.quizContents[nextQuizContentIndex])
-    }
-
-    return <QuizeFacilitator {...{ event, eventStatus, nextQuizContent }}  />
+    return <QuizeFacilitator {...{ event, quizContent, continueQuiz }}  />
   }
 }
 

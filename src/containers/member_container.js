@@ -6,7 +6,7 @@ import _get from 'lodash/get'
 import { observeEventStatus, pushMember, setAnswer } from '../firebase/database'
 import Page from '../components/pages/member'
 
-import type { MatchType, EventKeyType, MemberKeyType, EventStatusType, ChoiceType } from '../types'
+import type { MatchType, EventKeyType, MemberKeyType, EventStatusDataType, ChoiceType } from '../types'
 
 const MEMBER_KEY_COOKIE_NAME = 'mk'
 
@@ -14,7 +14,7 @@ type PropsType = {
   match: MatchType<{ eventKey: EventKeyType }>,
 }
 type StateType = {
-  eventStatus: ?EventStatusType,
+  eventStatus: ?EventStatusDataType,
   memberKey: ?MemberKeyType,
 }
 class Container extends Component<PropsType, StateType> {
@@ -53,7 +53,6 @@ class Container extends Component<PropsType, StateType> {
     } else {
       return <div>はずれ。。。</div>
     }
-
   }
 }
 

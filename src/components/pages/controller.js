@@ -1,11 +1,11 @@
 // @flow
 import React from 'react'
 
-import type { EventType, QuizType, EventStatusType } from '../../types'
+import type { EventDataType, QuizDataType, QuizContentDataType } from '../../types'
 
 type EventFacilitatorPropsType = {
-  event: EventType,
-  quiz: QuizType,
+  event: EventDataType,
+  quiz: QuizDataType,
   startQuiz: Function,
 }
 export const EventFacilitator = ({ quiz, event, startQuiz }: EventFacilitatorPropsType) => {
@@ -20,23 +20,23 @@ export const EventFacilitator = ({ quiz, event, startQuiz }: EventFacilitatorPro
 }
 
 type QuizeFacilitatorPropsType = {
-  event: EventType,
-  eventStatus: EventStatusType,
-  nextQuizContent: Function,
+  event: EventDataType,
+  quizContent: QuizContentDataType,
+  continueQuiz: Function,
 }
-export const QuizeFacilitator = ({ event, eventStatus, nextQuizContent }: QuizeFacilitatorPropsType) => {
+export const QuizeFacilitator = ({ event, quizContent, continueQuiz }: QuizeFacilitatorPropsType) => {
   return (
     <div>
       <h1>{event.eventTitle}</h1>
-      <h3>{eventStatus.quizContent.qText}</h3>
+      <h3>{quizContent.qText}</h3>
       <ul>
         {['a', 'b', 'c', 'd'].map((choice) => (
           <li key={choice}>
-            {choice}: {eventStatus.quizContent.choices[choice]}
+            {choice}: {quizContent.choices[choice]}
           </li>
         ))}
       </ul>
-      <button onClick={nextQuizContent}>次のクイズ</button>
+      <button onClick={continueQuiz}>次のクイズ</button>
     </div>
   )
 }

@@ -3,9 +3,9 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import _map from 'lodash/map'
 
-import type { EventsType } from '../../types'
+import type { EventsDataType } from '../../types'
 
-type PropsType = { events: ?EventsType }
+type PropsType = { events: ?EventsDataType }
 export default ({ events }: PropsType) => {
   return (
     <div>
