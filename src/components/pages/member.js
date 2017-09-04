@@ -9,15 +9,15 @@ type PropsType = {
   answer: Function,
 }
 export default ({ eventStatus, answer, myAnswer }: PropsType) => {
-  const { quizContentIndex } = eventStatus
+  const { quizContentIndex, quizContent } = eventStatus
   return (
     <div>
       <h1>第{quizContentIndex + 1}問</h1>
-      <h3>{eventStatus.quizContent.qText}</h3>
+      <h3>{quizContent.qText}</h3>
       {['a', 'b', 'c', 'd'].map(choice => (
         <div key={choice}>
           <button onClick={() => answer(choice)} disabled={!!myAnswer}>
-            {choice}: {eventStatus.quizContent.choices[choice]}
+            {choice}: {quizContent.choices[choice]}
           </button>
         </div>
       ))}
