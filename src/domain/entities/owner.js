@@ -25,8 +25,7 @@ export default (eventKey: EventKeyType, owner: ?OwnerDataType): ReturnType => {
   if (!event) return 'has_no_event'
   if (!quiz) return 'has_no_quiz'
 
-  const changeQuiz = (index: ?number) => {
-    if (!index) throw new Error('no next quiz content')
+  const changeQuiz = (index: number) => {
     setEventStatus(eventKey, {
       quizContentIndex: index,
       quizContent: quiz.quizContents[index],
@@ -38,7 +37,11 @@ export default (eventKey: EventKeyType, owner: ?OwnerDataType): ReturnType => {
     event,
     quiz,
     beginQuiz: () => changeQuiz(0),
-    continueQuiz: (eventStatus: EventStatusType) => changeQuiz(eventStatus.nextQuizContentIndex),
+    continueQuiz: (eventStatus: EventStatusType) => {
+      if (!eventStatus.hasNoNext) {
+        changeQuiz(eventStatus.nextQuizContentIndex)
+      }
+    },
     finishQuiz: () => resetEventStatus(eventKey),
     resetMembers: () => resetMembers(eventKey),
   }

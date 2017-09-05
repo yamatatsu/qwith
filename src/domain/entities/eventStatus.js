@@ -6,7 +6,7 @@ export type EventStatusType = {|
   quizContent: QuizContentDataType,
   quizContentIndexMax: number,
   hasNoNext: boolean,
-  nextQuizContentIndex: ?number,
+  nextQuizContentIndex: number,
 |}
 export default (eventStatus: ?EventStatusDataType): EventStatusType | 'not_started' => {
   if (!eventStatus) return 'not_started'
@@ -19,6 +19,6 @@ export default (eventStatus: ?EventStatusDataType): EventStatusType | 'not_start
     quizContent,
     quizContentIndexMax,
     hasNoNext,
-    nextQuizContentIndex: hasNoNext ? quizContentIndex + 1 : null
+    nextQuizContentIndex: quizContentIndex + 1,
   }
 }

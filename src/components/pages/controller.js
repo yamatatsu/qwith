@@ -33,8 +33,8 @@ export const QuizeFacilitator = ({ owner, eventStatus }: QuizeFacilitatorPropsTy
           </li>
         ))}
       </ul>
-      <div>{quizContentIndex}問目 / {quizContentIndexMax}問中</div>
-      <button onClick={continueQuiz} disabled={hasNoNext}>次のクイズに進む</button>
+      <div>{quizContentIndex + 1}問目 / {quizContentIndexMax}問中</div>
+      <button onClick={() => continueQuiz(eventStatus)} disabled={hasNoNext}>次のクイズに進む</button>
       <br/><br/><br/>
       <button onClick={finishQuiz}>クイズを終える</button><br/>
       <button onClick={resetMembers}>参加者をリセットする</button>
