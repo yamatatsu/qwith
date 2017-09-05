@@ -1,5 +1,5 @@
 // @flow
-import { updateEventStatus } from '../../firebase/database'
+import { updateEventStatus } from '../../infrastructure/database'
 
 import type { EventKeyType, OwnerDataType, EventDataType, QuizDataType } from '../../types'
 import type { EventStatusType } from './eventStatus'

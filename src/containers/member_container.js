@@ -1,42 +1,25 @@
 // @flow
 import React, { Component } from 'react'
-import Cookies from 'js-cookie'
 
-import { observeEventStatus, observeMember, pushMember } from '../firebase/database'
+import withEventStatus from './event_status_observer'
+import withMember from './member_observer'
 import createMember from '../domain/entities/member'
 import Page from '../components/pages/member'
 
 import type { MatchType, EventKeyType, MemberKeyType, EventStatusDataType, MemberDataType } from '../types'
 
-const MEMBER_KEY_COOKIE_NAME = 'mk'
-
 type PropsType = {
   match: MatchType<{ eventKey: EventKeyType }>,
-}
-type StateType = {
   eventStatus: ?EventStatusDataType,
-  memberKey: ?MemberKeyType,
+  memberKey: MemberKeyType,
   member: ?MemberDataType,
 }
+type StateType = {}
+
 class Container extends Component<PropsType, StateType> {
-  componentWillMount() {
-    const { eventKey } = this.props.match.params
-    observeEventStatus(eventKey, (eventStatus) => {
-      this.setState({ ...this.state, eventStatus })
-    })
-
-    const memberKey = Cookies.get(MEMBER_KEY_COOKIE_NAME) || pushMember(eventKey).key
-    Cookies.set(MEMBER_KEY_COOKIE_NAME, memberKey, { expires: 30 })
-    this.setState({ ...this.state, memberKey })
-
-    observeMember(eventKey, memberKey, (member) => {
-      this.setState({ ...this.state, member })
-    })
-  }
-
   render() {
-    const { eventKey } = this.props.match.params
-    const { eventStatus: eventStatusData, memberKey, member: memberData } = this.state
+    const { match, eventStatus: eventStatusData, memberKey, member: memberData } = this.props
+    const { eventKey } = match.params
 
     const member = createMember(eventKey, memberKey, eventStatusData, memberData)
 
@@ -51,4 +34,4 @@ class Container extends Component<PropsType, StateType> {
   }
 }
 
-export default Container
+export default withEventStatus(withMember(Container))

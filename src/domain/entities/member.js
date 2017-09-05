@@ -1,5 +1,5 @@
 // @flow
-import { updateMember } from '../../firebase/database'
+import { updateMember } from '../../infrastructure/database'
 
 import type { EventStatusDataType, MemberKeyType, MemberDataType, EventKeyType, ChoiceType } from '../../types'
 
@@ -11,7 +11,7 @@ export type MemberType = {|
 
 type ReturnType = MemberType | 'has_no_member_key' | 'has_no_event_status'
 
-export default (eventKey: EventKeyType, memberKey: ?MemberKeyType, eventStatus: ?EventStatusDataType, member: ?MemberDataType): ReturnType => {
+export default (eventKey: EventKeyType, memberKey: MemberKeyType, eventStatus: ?EventStatusDataType, member: ?MemberDataType): ReturnType => {
   if (!memberKey) return 'has_no_member_key'
   const _memberKey = (memberKey: MemberKeyType)
   if (!eventStatus) return 'has_no_event_status'

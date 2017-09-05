@@ -1,52 +1,30 @@
 // @flow
 import React, { Component } from 'react'
-import _get from 'lodash/get'
 
-import { observeAuth } from '../firebase/auth'
-import { observeOwner, observeEventStatus } from '../firebase/database'
+import withUser from './user_observer'
+import withEventStatus from './event_status_observer'
 import createOwner from '../domain/entities/owner'
 import createEventStatus from '../domain/entities/eventStatus'
 import { EventFacilitator, QuizeFacilitator } from '../components/pages/controller'
 
-import type { EventKeyType, MatchType, OwnerDataType, EventStatusDataType } from '../types'
+import type { MatchType, EventKeyType, OwnerDataType, EventStatusDataType } from '../types'
 
 type PropsType = {
   match: MatchType<{ eventKey: EventKeyType }>,
-}
-type StateType = {
   owner: ?OwnerDataType,
   eventStatus: ?EventStatusDataType,
 }
+type StateType = {}
 
 class Container extends Component<PropsType, StateType> {
-  state = {
-    owner: null,
-    eventStatus: null,
-  }
-
-  componentWillMount() {
-    observeAuth(_user => {
-      const ownerKey = _get(_user, 'uid')
-
-      observeOwner(ownerKey, (owner) => {
-        this.setState({ ...this.state, owner })
-      })
-    })
-
-    const { eventKey } = this.props.match.params
-    observeEventStatus(eventKey, (eventStatus) => {
-      this.setState({ ...this.state, eventStatus })
-    })
-  }
-
   render() {
-    const { eventKey } = this.props.match.params
-    const { owner: ownerData, eventStatus: eventStatusData } = this.state
+    const { match, owner: ownerData, eventStatus: eventStatusData } = this.props
+    const { eventKey } = match.params
 
     const owner = createOwner(eventKey, ownerData)
     const eventStatus = createEventStatus(eventStatusData)
 
-    if (owner === 'has_no_owner') return null // TODO: クルクル
+    if (owner === 'has_no_owner') throw new Error("異常系として検知したい") // TODO:
     if (owner === 'has_no_event') throw new Error("404にしたい") // TODO:
     if (owner === 'has_no_quiz') return <div>クイズが未登録です</div>
 
@@ -62,4 +40,4 @@ class Container extends Component<PropsType, StateType> {
   }
 }
 
-export default Container
+export default withUser(withEventStatus(Container))

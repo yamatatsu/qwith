@@ -10,7 +10,7 @@ export type EventKeyType = Class<EventKeyClass>
 export type MemberKeyType = Class<MemberKeyClass>
 export type QuizContentUidType = Class<QuizContentUidClass>
 
-export type UserType = { uid: string, displayName: string, photoURL: string }
+export type UserType = { uid: OwnerKeyType, displayName: string, photoURL: string }
 
 export type QuizContentDataType = {
   qText: string,

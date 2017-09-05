@@ -1,6 +1,6 @@
 // @flow
 import * as firebase from 'firebase'
-import firebaseApp from './app'
+import firebaseApp from './firebase_app'
 
 import type { UserType } from '../types'
 
@@ -16,7 +16,7 @@ const signInWithPopup = () =>
       console.error(`auth error. errorCode: ${errorCode}, errorMessage: ${errorMessage}, email: ${email}, credential: ${credential}`)
     })
 
-type CallbackType = (props: UserType) => void
+type CallbackType = (user: ?UserType) => void
 const observeAuth = (callback: CallbackType) => {
   auth.onAuthStateChanged(callback)
 }

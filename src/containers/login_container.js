@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react'
 
-import { signInWithPopup } from '../firebase/auth'
+import { signInWithPopup } from '../infrastructure/auth'
 import Page from '../components/pages/login'
 
 type PropsType = {}
