@@ -2,7 +2,7 @@
 import firebaseApp from './firebase_app'
 import Cookies from 'js-cookie'
 
-import type { OwnerKeyType, EventKeyType, MemberKeyType, OwnerDataType, MemberDataType, EventStatusDataType } from '../types'
+import type { OwnerKeyType, EventKeyType, MemberKeyType, OwnerDataType, MemberDataType, EventStatusDataType, ChoiceType } from '../types'
 
 const ref = firebaseApp.database().ref()
 
@@ -12,8 +12,14 @@ const getOwnerRef = (ownerKey: OwnerKeyType) =>
 const getEventStatusRef = (eventKey: EventKeyType) =>
   ref.child(`eventStatus/${eventKey.toString()}`)
 
+const getMembersRef = (eventKey: EventKeyType) =>
+  ref.child(`members/${eventKey.toString()}`)
+
 const getMemberRef = (eventKey: EventKeyType, memberKey: MemberKeyType) =>
   ref.child(`members/${eventKey.toString()}/${memberKey.toString()}`)
+
+const getAnswersRef = (eventKey: EventKeyType, memberKey: MemberKeyType) =>
+  ref.child(`members/${eventKey.toString()}/${memberKey.toString()}/quiz/answers`)
 
 export const observeOwner = (ownerKey: OwnerKeyType, callback: (owner: OwnerDataType) => void) => {
   getOwnerRef(ownerKey).on('value', (snapshot) => {
@@ -31,15 +37,21 @@ export const observeMember = (eventKey: EventKeyType, memberKey: MemberKeyType, 
   })
 }
 
-export const updateEventStatus = (eventKey: EventKeyType, eventStatus: EventStatusDataType) => {
-  getEventStatusRef(eventKey).update(eventStatus)
+export const setEventStatus = (eventKey: EventKeyType, eventStatus: EventStatusDataType) => {
+  getEventStatusRef(eventKey).set(eventStatus)
 }
-export const updateMember = (eventKey: EventKeyType, memberKey: MemberKeyType, member: MemberDataType) => {
-  getMemberRef(eventKey, memberKey).update(member)
+export const resetEventStatus = (eventKey: EventKeyType) => {
+  getEventStatusRef(eventKey).set(null)
+}
+export const setAnswer = (eventKey: EventKeyType, memberKey: MemberKeyType, quizContentIndex: number, choice: ChoiceType) => {
+  getAnswersRef(eventKey, memberKey).update({ [quizContentIndex]: choice })
+}
+export const resetMembers = (eventKey: EventKeyType) => {
+  getMembersRef(eventKey).set(null)
 }
 
 const pushMember = (eventKey: EventKeyType) => {
-  return ref.child(`members/${eventKey.toString()}`).push()
+  return getMembersRef(eventKey).push()
 }
 
 // TODO: Cookie扱っててココにあるべきじゃない気がするけど、domain objectsをどう書くかの構想が立つまで雑に実装

@@ -1,15 +1,13 @@
 // @flow
 import React from 'react'
 
-import type { EventStatusDataType, ChoiceType } from '../../types'
+import type { MemberType } from '../../domain/entities/member'
 
-type PropsType = {
-  eventStatus: EventStatusDataType,
-  myAnswer: ?ChoiceType,
-  answer: Function,
-}
-export default ({ eventStatus, answer, myAnswer }: PropsType) => {
+type PropsType = { member: MemberType }
+export default ({ member }: PropsType) => {
+  const { eventStatus, answer, myAnswer } = member
   const { quizContentIndex, quizContent } = eventStatus
+
   return (
     <div>
       <h1>第{quizContentIndex + 1}問</h1>

@@ -28,9 +28,7 @@ class Container extends Component<PropsType, StateType> {
       return <div>クイズ開始までお待ち下さい。</div>
     }
 
-    const { eventStatus, myAnswer, answer } = member
-
-    return <Page {...{ eventStatus, myAnswer, answer }} />
+    return <Page {...{ member }} />
   }
 }
 

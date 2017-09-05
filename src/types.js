@@ -34,6 +34,7 @@ export type MemberDataType = {
 export type EventStatusDataType = {
   quizContentIndex: number,
   quizContent: QuizContentDataType,
+  quizContentIndexMax: number,
 }
 
 export type DataType = {

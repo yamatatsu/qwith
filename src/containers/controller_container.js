@@ -28,15 +28,10 @@ class Container extends Component<PropsType, StateType> {
     if (owner === 'has_no_event') throw new Error("404にしたい") // TODO:
     if (owner === 'has_no_quiz') return <div>クイズが未登録です</div>
 
-    const { event, quiz, startQuiz, continueQuiz } = owner
-
     if (eventStatus === 'not_started') {
-      return <EventFacilitator {...{ event, quiz, startQuiz }} />
+      return <EventFacilitator {...{ owner }} />
     }
-
-    const { quizContent } = eventStatus
-
-    return <QuizeFacilitator {...{ event, quizContent, continueQuiz: () => continueQuiz(eventStatus) }}  />
+    return <QuizeFacilitator {...{ owner, eventStatus }} />
   }
 }
 

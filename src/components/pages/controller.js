@@ -1,30 +1,27 @@
 // @flow
 import React from 'react'
 
-import type { EventDataType, QuizDataType, QuizContentDataType } from '../../types'
+import type { OwnerType } from '../../domain/entities/owner'
+import type { EventStatusType } from '../../domain/entities/eventStatus'
 
-type EventFacilitatorPropsType = {
-  event: EventDataType,
-  quiz: QuizDataType,
-  startQuiz: Function,
-}
-export const EventFacilitator = ({ quiz, event, startQuiz }: EventFacilitatorPropsType) => {
+type EventFacilitatorPropsType = { owner: OwnerType }
+export const EventFacilitator = ({ owner }: EventFacilitatorPropsType) => {
+  const { event, quiz, beginQuiz } = owner
   return (
     <div>
       <h1>{event.eventTitle}</h1>
-      <button onClick={() => startQuiz()}>
+      <button onClick={() => beginQuiz()}>
         {quiz.quizTitle}を始める
       </button>
     </div>
   )
 }
 
-type QuizeFacilitatorPropsType = {
-  event: EventDataType,
-  quizContent: QuizContentDataType,
-  continueQuiz: Function,
-}
-export const QuizeFacilitator = ({ event, quizContent, continueQuiz }: QuizeFacilitatorPropsType) => {
+type QuizeFacilitatorPropsType = { owner: OwnerType, eventStatus: EventStatusType }
+export const QuizeFacilitator = ({ owner, eventStatus }: QuizeFacilitatorPropsType) => {
+  const { event, continueQuiz, finishQuiz, resetMembers } = owner
+  const { quizContentIndex, quizContent, quizContentIndexMax, hasNoNext } = eventStatus
+
   return (
     <div>
       <h1>{event.eventTitle}</h1>
@@ -36,7 +33,11 @@ export const QuizeFacilitator = ({ event, quizContent, continueQuiz }: QuizeFaci
           </li>
         ))}
       </ul>
-      <button onClick={continueQuiz}>次のクイズ</button>
+      <div>{quizContentIndex}問目 / {quizContentIndexMax}問中</div>
+      <button onClick={continueQuiz} disabled={hasNoNext}>次のクイズに進む</button>
+      <br/><br/><br/>
+      <button onClick={finishQuiz}>クイズを終える</button><br/>
+      <button onClick={resetMembers}>参加者をリセットする</button>
     </div>
   )
 }

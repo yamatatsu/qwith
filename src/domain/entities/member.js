@@ -1,5 +1,5 @@
 // @flow
-import { updateMember } from '../../infrastructure/database'
+import { setAnswer } from '../../infrastructure/database'
 
 import type { EventStatusDataType, MemberKeyType, MemberDataType, EventKeyType, ChoiceType } from '../../types'
 
@@ -23,8 +23,6 @@ export default (eventKey: EventKeyType, memberKey: MemberKeyType, eventStatus: ?
   return {
     eventStatus,
     myAnswer,
-    answer: (choice: ChoiceType) => {
-      updateMember(eventKey, _memberKey, { quiz: { answers: { [quizContentIndex]: choice } } })
-    },
+    answer: (choice: ChoiceType) => setAnswer(eventKey, _memberKey, quizContentIndex, choice),
   }
 }
