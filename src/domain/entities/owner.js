@@ -5,6 +5,7 @@ import type { EventKeyType, OwnerDataType, EventDataType, QuizDataType } from '.
 import type { EventStatusType } from './eventStatus'
 
 export type OwnerType = {|
+  eventKey: EventKeyType,
   event: EventDataType,
   quiz: QuizDataType,
   beginQuiz: () => void,
@@ -34,6 +35,7 @@ export default (eventKey: EventKeyType, owner: ?OwnerDataType): ReturnType => {
   }
 
   return {
+    eventKey,
     event,
     quiz,
     beginQuiz: () => changeQuiz(0),

@@ -1,15 +1,18 @@
 // @flow
 import React from 'react'
+import QRCode from  'qrcode.react'
 
 import type { OwnerType } from '../../domain/entities/owner'
 import type { EventStatusType } from '../../domain/entities/eventStatus'
 
 type EventFacilitatorPropsType = { owner: OwnerType }
 export const EventFacilitator = ({ owner }: EventFacilitatorPropsType) => {
-  const { event, quiz, beginQuiz } = owner
+  const { eventKey, event, quiz, beginQuiz } = owner
+  const urlBase: string = process.env.REACT_APP_URL_BASE || ''
   return (
     <div>
       <h1>{event.eventTitle}</h1>
+      <QRCode value={`${urlBase}/${eventKey.toString()}/member`} />
       <button onClick={() => beginQuiz()}>
         {quiz.quizTitle}を始める
       </button>
