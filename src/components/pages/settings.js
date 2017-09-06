@@ -3,21 +3,50 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import _map from 'lodash/map'
 
-import type { EventsDataType } from '../../types'
+import type { OwnerDataType, EventsDataType, QuizesDataType, QuizDataType } from '../../types'
 
-type PropsType = { events: ?EventsDataType }
-export default ({ events }: PropsType) => {
+type PropsType = { owner: ?OwnerDataType }
+export default ({ owner }: PropsType) => {
+
   return (
     <div>
       <h1>Settings</h1>
-      {_map(events, (event, eventKey) => (
-        <div key={eventKey}>
-          <h3>{event.eventTitle}</h3>
-          <Link to={`/${eventKey}/controller`}>
-            <button>始める</button>
-          </Link>
-        </div>
-      ))}
+      {owner ? <EventList events={owner.events} quizes={owner.quizes} /> : 'イベント未登録'}
     </div>
   )
 }
+
+const EventList = ({ events, quizes }: { events: EventsDataType, quizes: ?QuizesDataType }) => (
+  <div>
+    {_map(events, (event, eventKey) => {
+      const quiz = quizes && quizes[eventKey]
+      return (
+        <div key={eventKey}>
+          {event.eventTitle}
+          <Link to={`/${eventKey}/controller`}>
+            <button>始める</button>
+          </Link>
+          <br/>
+          <br/>
+          {quiz ? <Quiz quiz={quiz} /> : 'クイズが未登録'}
+        </div>
+      )
+    })}
+  </div>
+)
+
+const Quiz = ({ quiz }: { quiz: QuizDataType }) => (
+  <div>
+    {quiz.quizTitle}
+    <br/>
+    {_map(quiz.quizContents, ({ qText, choices, answerChoice, uid }, index) => (
+      <div key={index}>
+        <div>問題: {qText}</div>
+        {_map(choices, (c, k) => <div key={k}>{k}: {c}</div>)}
+        <div>答え: {answerChoice}</div>
+        <div>uid: {uid}</div>
+        <br/>
+      </div>
+    ))}
+  </div>
+)

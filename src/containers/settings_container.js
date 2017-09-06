@@ -11,8 +11,7 @@ type StateType = {}
 
 class Container extends Component<PropsType, StateType> {
   render() {
-    const events = this.props.owner && this.props.owner.events
-    return <Page events={events} />
+    return <Page owner={this.props.owner} />
   }
 }
 
