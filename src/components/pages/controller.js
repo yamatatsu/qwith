@@ -1,6 +1,6 @@
 // @flow
 import React from 'react'
-
+import BasicTemplate from '../templates/basic'
 import type { OwnerType } from '../../domain/entities/owner'
 import type { EventStatusType } from '../../domain/entities/eventStatus'
 
@@ -8,12 +8,12 @@ type EventFacilitatorPropsType = { owner: OwnerType }
 export const EventFacilitator = ({ owner }: EventFacilitatorPropsType) => {
   const { event, quiz, beginQuiz } = owner
   return (
-    <div>
+    <BasicTemplate>
       <h1>{event.eventTitle}</h1>
       <button onClick={() => beginQuiz()}>
         {quiz.quizTitle}を始める
       </button>
-    </div>
+    </BasicTemplate>
   )
 }
 
@@ -23,7 +23,7 @@ export const QuizeFacilitator = ({ owner, eventStatus }: QuizeFacilitatorPropsTy
   const { quizContentIndex, quizContent, quizContentIndexMax, hasNoNext } = eventStatus
 
   return (
-    <div>
+    <BasicTemplate>
       <h1>{event.eventTitle}</h1>
       <h3>{quizContent.qText}</h3>
       <ul>
@@ -38,6 +38,6 @@ export const QuizeFacilitator = ({ owner, eventStatus }: QuizeFacilitatorPropsTy
       <br/><br/><br/>
       <button onClick={finishQuiz}>クイズを終える</button><br/>
       <button onClick={resetMembers}>参加者をリセットする</button>
-    </div>
+    </BasicTemplate>
   )
 }

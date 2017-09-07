@@ -2,13 +2,14 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import _map from 'lodash/map'
+import BasicTemplate from '../templates/basic'
 
 import type { EventsDataType } from '../../types'
 
 type PropsType = { events: ?EventsDataType }
 export default ({ events }: PropsType) => {
   return (
-    <div>
+    <BasicTemplate>
       <h1>Settings</h1>
       {_map(events, (event, eventKey) => (
         <div key={eventKey}>
@@ -18,6 +19,6 @@ export default ({ events }: PropsType) => {
           </Link>
         </div>
       ))}
-    </div>
+    </BasicTemplate>
   )
 }
