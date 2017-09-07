@@ -9,11 +9,9 @@ export type MemberType = {|
   answer: (choice: ChoiceType) => void,
 |}
 
-type ReturnType = MemberType | 'has_no_member_key' | 'has_no_event_status'
+type ReturnType = MemberType | 'has_no_event_status'
 
 export default (eventKey: EventKeyType, memberKey: MemberKeyType, eventStatus: ?EventStatusDataType, member: ?MemberDataType): ReturnType => {
-  if (!memberKey) return 'has_no_member_key'
-  const _memberKey = (memberKey: MemberKeyType)
   if (!eventStatus) return 'has_no_event_status'
 
   const { quizContentIndex } = eventStatus
@@ -23,6 +21,6 @@ export default (eventKey: EventKeyType, memberKey: MemberKeyType, eventStatus: ?
   return {
     eventStatus,
     myAnswer,
-    answer: (choice: ChoiceType) => setAnswer(eventKey, _memberKey, quizContentIndex, choice),
+    answer: (choice: ChoiceType) => setAnswer(eventKey, memberKey, quizContentIndex, choice),
   }
 }

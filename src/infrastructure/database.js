@@ -7,19 +7,19 @@ import type { OwnerKeyType, EventKeyType, MemberKeyType, OwnerDataType, MemberDa
 const ref = firebaseApp.database().ref()
 
 const getOwnerRef = (ownerKey: OwnerKeyType) =>
-  ref.child(`owners/${ownerKey.toString()}`)
+  ref.child(`owners/${ownerKey}`)
 
 const getEventStatusRef = (eventKey: EventKeyType) =>
-  ref.child(`eventStatus/${eventKey.toString()}`)
+  ref.child(`eventStatus/${eventKey}`)
 
 const getMembersRef = (eventKey: EventKeyType) =>
-  ref.child(`members/${eventKey.toString()}`)
+  ref.child(`members/${eventKey}`)
 
 const getMemberRef = (eventKey: EventKeyType, memberKey: MemberKeyType) =>
-  ref.child(`members/${eventKey.toString()}/${memberKey.toString()}`)
+  ref.child(`members/${eventKey}/${memberKey}`)
 
 const getAnswersRef = (eventKey: EventKeyType, memberKey: MemberKeyType) =>
-  ref.child(`members/${eventKey.toString()}/${memberKey.toString()}/quiz/answers`)
+  ref.child(`members/${eventKey}/${memberKey}/quiz/answers`)
 
 export const observeOwner = (ownerKey: OwnerKeyType, callback: (owner: OwnerDataType) => void) => {
   getOwnerRef(ownerKey).on('value', (snapshot) => {

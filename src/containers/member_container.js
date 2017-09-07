@@ -23,7 +23,6 @@ class Container extends Component<PropsType, StateType> {
 
     const member = createMember(eventKey, memberKey, eventStatusData, memberData)
 
-    if (member === 'has_no_member_key') return null // TODO クルクル
     if (member === 'has_no_event_status') {
       return <div>クイズ開始までお待ち下さい。</div>
     }
