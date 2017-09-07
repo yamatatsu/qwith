@@ -16,9 +16,11 @@ const signInWithPopup = () =>
       console.error(`auth error. errorCode: ${errorCode}, errorMessage: ${errorMessage}, email: ${email}, credential: ${credential}`)
     })
 
+const signOut = () => auth.signOut()
+
 type CallbackType = (user: ?UserType) => void
 const observeAuth = (callback: CallbackType) => {
   auth.onAuthStateChanged(callback)
 }
 
-export { signInWithPopup, observeAuth }
+export { signInWithPopup, signOut, observeAuth }

@@ -2,6 +2,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import _map from 'lodash/map'
+import BasicTemplate from '../templates/basic'
 
 import type { OwnerDataType, EventsDataType, QuizesDataType, QuizDataType } from '../../types'
 
@@ -9,10 +10,10 @@ type PropsType = { owner: ?OwnerDataType }
 export default ({ owner }: PropsType) => {
 
   return (
-    <div>
+    <BasicTemplate>
       <h1>Settings</h1>
       {owner ? <EventList events={owner.events} quizes={owner.quizes} /> : 'イベント未登録'}
-    </div>
+    </BasicTemplate>
   )
 }
 

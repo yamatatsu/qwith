@@ -1,7 +1,7 @@
 // @flow
 import React from 'react'
 import QRCode from  'qrcode.react'
-
+import BasicTemplate from '../templates/basic'
 import type { OwnerType } from '../../domain/entities/owner'
 import type { EventStatusType } from '../../domain/entities/eventStatus'
 
@@ -10,13 +10,13 @@ export const EventFacilitator = ({ owner }: EventFacilitatorPropsType) => {
   const { eventKey, event, quiz, beginQuiz } = owner
   const urlBase: string = process.env.REACT_APP_URL_BASE || ''
   return (
-    <div>
+    <BasicTemplate>
       <h1>{event.eventTitle}</h1>
       <QRCode value={`${urlBase}/${eventKey.toString()}/member`} />
       <button onClick={() => beginQuiz()}>
         {quiz.quizTitle}を始める
       </button>
-    </div>
+    </BasicTemplate>
   )
 }
 
@@ -26,7 +26,7 @@ export const QuizeFacilitator = ({ owner, eventStatus }: QuizeFacilitatorPropsTy
   const { quizContentIndex, quizContent, quizContentIndexMax, hasNoNext } = eventStatus
 
   return (
-    <div>
+    <BasicTemplate>
       <h1>{event.eventTitle}</h1>
       <h3>{quizContent.qText}</h3>
       <ul>
@@ -41,6 +41,6 @@ export const QuizeFacilitator = ({ owner, eventStatus }: QuizeFacilitatorPropsTy
       <br/><br/><br/>
       <button onClick={finishQuiz}>クイズを終える</button><br/>
       <button onClick={resetMembers}>参加者をリセットする</button>
-    </div>
+    </BasicTemplate>
   )
 }

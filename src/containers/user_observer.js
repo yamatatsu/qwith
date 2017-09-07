@@ -1,9 +1,9 @@
 // @flow
 import React, { Component } from 'react'
 import type { ComponentType } from 'react'
-
-import { observeAuth, signInWithPopup } from '../infrastructure/auth'
+import { observeAuth } from '../infrastructure/auth'
 import { observeOwner } from '../infrastructure/database'
+import Login from '../components/pages/login'
 
 import type { UserType, OwnerDataType } from '../types'
 
@@ -18,24 +18,29 @@ export default (WrappedComponent: ComponentType<*>): ComponentType<*> => {
       user: 'not_feached',
       owner: 'not_feached',
     }
+    removeAuthListener = null
+    removeOwnerListener = null
 
-    componentWillMount() {
-      observeAuth(user => {
-        if (user) {
-          this.setState({ ...this.state, user })
+    componentDidMount() {
+      this.removeAuthListener = observeAuth(user => {
+        this.setState({ ...this.state, user })
 
-          observeOwner(user.uid, (owner) => {
-            this.setState({ ...this.state, owner })
-          })
-        }
+        if (!user) return
+        this.removeOwnerListener = observeOwner(user.uid, (owner) => {
+          this.setState({ ...this.state, owner })
+        })
       })
+    }
+    componentWillUnmount () {
+      this.removeAuthListener && this.removeAuthListener()
+      this.removeOwnerListener && this.removeOwnerListener()
     }
 
     render() {
       const { user, owner } = this.state
 
-      if (!user) signInWithPopup()
-      if (!user || user === 'not_feached' || owner === 'not_feached') return <div>データ取得中</div> // TODO: くるくる
+      if (!user) return <Login />
+      if (user === 'not_feached' || owner === 'not_feached') return <div>データ取得中</div> // TODO: くるくる
 
       return <WrappedComponent {...this.props} {...{ user, owner }} />
     }

@@ -1,8 +1,10 @@
+// @flow
 import React from 'react'
+import { signInWithPopup } from '../../infrastructure/auth'
 
-export default ({ login }) => (
+export default () => (
   <div>
     <h1>Login</h1>
-    <button onClick={login}>googleアカウントでログイン</button>
+    <button onClick={signInWithPopup}>googleアカウントでログイン</button>
   </div>
 )
