@@ -6,20 +6,22 @@ export type ChoiceType = 'a' | 'b' | 'c' | 'd'
 
 export type UserType = { uid: OwnerKeyType, displayName: string, photoURL: string }
 
+
+export type EventDataType = { eventTitle: string }
+export type EventsDataType = { [eventKey: EventKeyType]: EventDataType }
+export type QuizDataType = { quizTitle: string }
+export type QuizesDataType = { [eventKey: EventKeyType]: QuizDataType }
 export type QuizContentDataType = {
   qText: string,
   [choice: ChoiceType]: string,
   answerChoice: ChoiceType,
   uid: QuizContentUidType,
 }
-
-export type QuizDataType = { quizTitle: string, quizContents: QuizContentDataType[] }
-export type QuizesDataType = { [eventKey: EventKeyType]: QuizDataType }
-export type EventDataType = { eventTitle: string }
-export type EventsDataType = { [eventKey: EventKeyType]: EventDataType }
+export type QuizContentsDataType = { [eventKey: EventKeyType]: QuizContentDataType[] }
 export type OwnerDataType = {
   events: EventsDataType,
   quizes?: QuizesDataType,
+  quizContents?: QuizContentsDataType,
 }
 
 export type MemberDataType = {

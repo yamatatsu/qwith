@@ -37,6 +37,9 @@ export const observeMember = (eventKey: EventKeyType, memberKey: MemberKeyType, 
   })
 }
 
+export const setOwner = (ownerKey: OwnerKeyType, eventStatus: EventStatusDataType) => {
+  getOwnerRef(ownerKey).set(eventStatus)
+}
 export const setEventStatus = (eventKey: EventKeyType, eventStatus: EventStatusDataType) => {
   getEventStatusRef(eventKey).set(eventStatus)
 }

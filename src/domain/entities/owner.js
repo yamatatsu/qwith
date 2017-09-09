@@ -14,23 +14,25 @@ export type OwnerType = {|
   resetMembers: () => void,
 |}
 
-type ReturnType = OwnerType | 'has_no_event' | 'has_no_quiz' | 'has_no_owner'
+type ReturnType = OwnerType | 'has_no_owner' | 'has_no_event' | 'has_no_quiz' | 'has_no_quiz_contents'
 
 export default (eventKey: EventKeyType, owner: ?OwnerDataType): ReturnType => {
   if (!owner) return 'has_no_owner'
 
-  const { events, quizes } = owner
+  const { events, quizes, quizContents: quizContentsObj } = owner
   const event = events[eventKey]
   const quiz = quizes && quizes[eventKey]
+  const quizContents = quizContentsObj && quizContentsObj[eventKey]
 
   if (!event) return 'has_no_event'
   if (!quiz) return 'has_no_quiz'
+  if (!quizContents) return 'has_no_quiz_contents'
 
   const changeQuiz = (index: number) => {
     setEventStatus(eventKey, {
       quizContentIndex: index,
-      quizContent: quiz.quizContents[index],
-      quizContentIndexMax: quiz.quizContents.length,
+      quizContent: quizContents[index],
+      quizContentIndexMax: quizContents.length,
     })
   }
 
