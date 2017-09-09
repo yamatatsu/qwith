@@ -7,34 +7,31 @@ import EventForm from '../../containers/settings/event_form'
 import QuizForm from '../../containers/settings/quiz_form'
 import QuizContentForm from '../../containers/settings/quiz_content_form'
 
-import type { EventKeyType, OwnerDataType, EventsDataType, EventDataType, QuizesDataType, QuizDataType, QuizContentsDataType, QuizContentDataType } from '../../types'
+import type { EventKeyType, OwnerDataType, EventDataType, QuizDataType, QuizContentDataType } from '../../types'
 
-type PropsType = { owner: ?OwnerDataType }
-export default ({ owner }: PropsType) => {
+type PropsType = {
+  owner: ?OwnerDataType,
+  saveEvent: (eventKey: EventKeyType) => (event: EventDataType) => void
+}
+export default ({ owner, saveEvent }: PropsType) => {
   if (!owner) return <BasicTemplate>イベント未登録</BasicTemplate>
 
-  const { events, quizes, quizContents } = owner
+  const { events, quizes, quizContents: quizContentsObj } = owner
   return (
     <BasicTemplate>
       <h1>Settings</h1>
-      <EventList {...{ events, quizes, quizContents }} />
+      {_map(events, (event, eventKey) => {
+        const quiz = quizes && quizes[eventKey]
+        const quizContents = quizContentsObj && quizContentsObj[eventKey]
+        return <Event key={eventKey} {...{ eventKey, event, quiz, quizContents, saveEvent: saveEvent(eventKey) }}/>
+      })}
     </BasicTemplate>
   )
 }
 
-const EventList = ({ events, quizes, quizContents: quizContentsObj }: { events: EventsDataType, quizes: ?QuizesDataType, quizContents: ?QuizContentsDataType }) => (
+const Event = ({ eventKey, event, quiz, quizContents, saveEvent }: { eventKey: EventKeyType, event: EventDataType, quiz: ?QuizDataType, quizContents: ?QuizContentDataType[], saveEvent: (event: EventDataType) => void }) => (
   <div>
-    {_map(events, (event, eventKey) => {
-      const quiz = quizes && quizes[eventKey]
-      const quizContents = quizContentsObj && quizContentsObj[eventKey]
-      return <Event key={eventKey} {...{ eventKey, event, quiz, quizContents }}/>
-    })}
-  </div>
-)
-
-const Event = ({ eventKey, event, quiz, quizContents }: { eventKey: EventKeyType, event: EventDataType, quiz: ?QuizDataType, quizContents: ?QuizContentDataType[] }) => (
-  <div>
-    <EventForm event={event} />
+    <EventForm event={event} saveEvent={saveEvent} />
     <Link to={`/${eventKey}/controller`}>
       <button>始める</button>
     </Link>

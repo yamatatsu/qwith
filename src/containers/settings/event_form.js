@@ -7,7 +7,7 @@ import UndoIcon from 'material-ui-icons/Undo'
 import type { EventDataType } from '../../types'
 
 type EventFormType = { eventTitle?: string }
-type PropsType = { event: EventDataType }
+type PropsType = { event: EventDataType, saveEvent: (event: EventDataType) => void }
 type StateType = { event: EventFormType }
 
 export default class EventForm extends Component<PropsType, StateType> {
@@ -20,6 +20,15 @@ export default class EventForm extends Component<PropsType, StateType> {
 
   onChange(name: string, value: string) {
     this.setState({ ...this.state, event: { [name]: value } })
+  }
+
+  onSave() {
+    const { eventTitle } = this.state.event
+    if (!eventTitle) {
+      alert('イベント名が空です')
+      return
+    }
+    this.props.saveEvent({ eventTitle })
   }
 
   onClear() {
@@ -35,14 +44,17 @@ export default class EventForm extends Component<PropsType, StateType> {
     const onClear = () => {
       this.onClear()
     }
-    return <Event event={this.state.event} {...{ onChange, onClear }} />
+    const onSave = () => {
+      this.onSave()
+    }
+    return <Event event={this.state.event} {...{ onChange, onClear, onSave }} />
   }
 }
 
-const Event = ({ event, onChange, onClear }: { event: EventFormType, onChange: Function, onClear: Function }) => (
+const Event = ({ event, onChange, onClear, onSave }: { event: EventFormType, onChange: Function, onClear: Function, onSave: Function }) => (
   <div>
     <TextField name="eventTitle" label="イベント名" value={event.eventTitle} onChange={onChange} />
-    <IconButton aria-label="Done" color="primary">
+    <IconButton aria-label="Done" color="primary" onClick={onSave}>
       <DoneIcon />
     </IconButton>
     <IconButton aria-label="Clear" onClick={onClear}>
