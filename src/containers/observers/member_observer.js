@@ -2,9 +2,9 @@
 import React, { Component } from 'react'
 import type { ComponentType } from 'react'
 
-import { observeMember, getMemberKey } from '../infrastructure/database'
+import { observeMember, getMemberKey } from '../../infrastructure/database'
 
-import type { MatchType, EventKeyType, MemberKeyType, MemberDataType } from '../types'
+import type { MatchType, EventKeyType, MemberKeyType, MemberDataType } from '../../types'
 
 type PropsType = { match: MatchType<{ eventKey: EventKeyType }> }
 type StateType = {

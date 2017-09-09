@@ -1,3 +1,6 @@
 extends: react-app
 globals:
-  firebase: false
+  OwnerKeyType: false
+  EventKeyType: false
+  MemberKeyType: false
+  QuizContentUidType: false

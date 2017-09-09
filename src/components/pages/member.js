@@ -15,7 +15,7 @@ export default ({ member }: PropsType) => {
       {['a', 'b', 'c', 'd'].map(choice => (
         <div key={choice}>
           <button onClick={() => answer(choice)} disabled={!!myAnswer}>
-            {choice}: {quizContent.choices[choice]}
+            {choice}: {quizContent[choice]}
           </button>
         </div>
       ))}

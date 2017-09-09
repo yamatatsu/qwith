@@ -1,8 +1,8 @@
 // @flow
 import React, { Component } from 'react'
 
-import withUser from './user_observer'
-import withEventStatus from './event_status_observer'
+import withUser from './observers/user_observer'
+import withEventStatus from './observers/event_status_observer'
 import createOwner from '../domain/entities/owner'
 import createEventStatus from '../domain/entities/eventStatus'
 import { EventFacilitator, QuizeFacilitator } from '../components/pages/controller'

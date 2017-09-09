@@ -1,16 +1,14 @@
 // @flow
-export type ChoiceType = 'a' | 'b' | 'c' | 'd'
+import type { OwnerKeyType, EventKeyType, MemberKeyType, QuizContentUidType } from './keys'
+export type { OwnerKeyType, EventKeyType, MemberKeyType, QuizContentUidType }
 
-export opaque type OwnerKeyType: string = string
-export opaque type EventKeyType: string = string
-export opaque type MemberKeyType: string = string
-export opaque type QuizContentUidType: string = string
+export type ChoiceType = 'a' | 'b' | 'c' | 'd'
 
 export type UserType = { uid: OwnerKeyType, displayName: string, photoURL: string }
 
 export type QuizContentDataType = {
   qText: string,
-  choices: { [choice: ChoiceType]: string },
+  [choice: ChoiceType]: string,
   answerChoice: ChoiceType,
   uid: QuizContentUidType,
 }

@@ -32,7 +32,7 @@ export const QuizeFacilitator = ({ owner, eventStatus }: QuizeFacilitatorPropsTy
       <ul>
         {['a', 'b', 'c', 'd'].map((choice) => (
           <li key={choice}>
-            {choice}: {quizContent.choices[choice]}
+            {choice}: {quizContent[choice]}
           </li>
         ))}
       </ul>

@@ -1,11 +1,11 @@
 // @flow
 import React, { Component } from 'react'
 import type { ComponentType } from 'react'
-import { observeAuth } from '../infrastructure/auth'
-import { observeOwner } from '../infrastructure/database'
-import Login from '../components/pages/login'
+import { observeAuth } from '../../infrastructure/auth'
+import { observeOwner } from '../../infrastructure/database'
+import Login from '../../components/pages/login'
 
-import type { UserType, OwnerDataType } from '../types'
+import type { UserType, OwnerDataType } from '../../types'
 
 type StateType = {
   user: 'not_feached' | ?UserType,

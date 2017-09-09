@@ -1,8 +1,8 @@
 // @flow
 import React, { Component } from 'react'
 
-import withEventStatus from './event_status_observer'
-import withMember from './member_observer'
+import withEventStatus from './observers/event_status_observer'
+import withMember from './observers/member_observer'
 import createMember from '../domain/entities/member'
 import Page from '../components/pages/member'
 
