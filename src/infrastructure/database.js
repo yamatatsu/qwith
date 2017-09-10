@@ -2,7 +2,19 @@
 import firebaseApp from './firebase_app'
 import Cookies from 'js-cookie'
 
-import type { OwnerKeyType, EventKeyType, MemberKeyType, OwnerDataType, EventDataType, MemberDataType, EventStatusDataType, ChoiceType } from '../types'
+import type {
+  OwnerKeyType,
+  EventKeyType,
+  MemberKeyType,
+
+  OwnerDataType,
+  EventDataType,
+  QuizDataType,
+  MemberDataType,
+  EventStatusDataType,
+
+  ChoiceType
+} from '../types'
 
 const ref = firebaseApp.database().ref()
 
@@ -39,6 +51,9 @@ export const observeMember = (eventKey: EventKeyType, memberKey: MemberKeyType, 
 
 export const setEvent = (ownerKey: OwnerKeyType, eventKey: EventKeyType, event: EventDataType) => {
   getOwnerRef(ownerKey).child(`events/${eventKey}`).set(event)
+}
+export const setQuiz = (ownerKey: OwnerKeyType, eventKey: EventKeyType, quiz: QuizDataType) => {
+  getOwnerRef(ownerKey).child(`quizes/${eventKey}`).set(quiz)
 }
 export const setEventStatus = (eventKey: EventKeyType, eventStatus: EventStatusDataType) => {
   getEventStatusRef(eventKey).set(eventStatus)

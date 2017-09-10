@@ -5,31 +5,37 @@ import _map from 'lodash/map'
 import BasicTemplate from '../templates/basic'
 import EventForm from '../../containers/settings/event_form'
 import QuizForm from '../../containers/settings/quiz_form'
-import QuizContentForm from '../../containers/settings/quiz_content_form'
 
-import type { EventKeyType, OwnerDataType, EventDataType, QuizDataType, QuizContentDataType } from '../../types'
+import type { EventKeyType, OwnerDataType, EventDataType, QuizDataType } from '../../types'
 
 type PropsType = {
   owner: ?OwnerDataType,
-  saveEvent: (eventKey: EventKeyType) => (event: EventDataType) => void
+  saveEvent: (eventKey: EventKeyType) => (event: EventDataType) => void,
+  saveQuiz: (eventKey: EventKeyType) => (quiz: QuizDataType) => void,
 }
-export default ({ owner, saveEvent }: PropsType) => {
+export default ({ owner, saveEvent, saveQuiz }: PropsType) => {
   if (!owner) return <BasicTemplate>イベント未登録</BasicTemplate>
 
-  const { events, quizes, quizContents: quizContentsObj } = owner
+  const { events, quizes } = owner
   return (
     <BasicTemplate>
       <h1>Settings</h1>
       {_map(events, (event, eventKey) => {
         const quiz = quizes && quizes[eventKey]
-        const quizContents = quizContentsObj && quizContentsObj[eventKey]
-        return <Event key={eventKey} {...{ eventKey, event, quiz, quizContents, saveEvent: saveEvent(eventKey) }}/>
+        return <Event key={eventKey} {...{ eventKey, event, quiz, saveEvent: saveEvent(eventKey), saveQuiz: saveQuiz(eventKey) }}/>
       })}
     </BasicTemplate>
   )
 }
 
-const Event = ({ eventKey, event, quiz, quizContents, saveEvent }: { eventKey: EventKeyType, event: EventDataType, quiz: ?QuizDataType, quizContents: ?QuizContentDataType[], saveEvent: (event: EventDataType) => void }) => (
+type EventPropsType = {
+  eventKey: EventKeyType,
+  event: EventDataType,
+  quiz: ?QuizDataType,
+  saveEvent: (event: EventDataType) => void,
+  saveQuiz: (quiz: QuizDataType) => void,
+}
+const Event = ({ eventKey, event, quiz, saveEvent, saveQuiz }: EventPropsType) => (
   <div>
     <EventForm event={event} saveEvent={saveEvent} />
     <Link to={`/${eventKey}/controller`}>
@@ -37,16 +43,6 @@ const Event = ({ eventKey, event, quiz, quizContents, saveEvent }: { eventKey: E
     </Link>
     <br/>
     <br/>
-    {(quiz && quizContents) ? <Quiz {...{ quiz, quizContents }} /> : 'クイズが未登録'}
-  </div>
-)
-
-const Quiz = ({ quiz, quizContents }: { quiz: QuizDataType, quizContents: QuizContentDataType[] }) => (
-  <div>
-    <QuizForm quiz={quiz} />
-    <br/>
-    {quizContents.map((quizContent, index) => (
-      <QuizContentForm key={index} quizContent={quizContent} />
-    ))}
+    <QuizForm quiz={quiz} saveQuiz={saveQuiz} />
   </div>
 )

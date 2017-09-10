@@ -27,7 +27,6 @@ class Container extends Component<PropsType, StateType> {
     if (owner === 'has_no_owner') throw new Error("異常系として検知したい") // TODO:
     if (owner === 'has_no_event') throw new Error("404にしたい") // TODO:
     if (owner === 'has_no_quiz') return <div>クイズが未登録です</div>
-    if (owner === 'has_no_quiz_contents') return <div>クイズが未登録です</div>
 
     if (eventStatus === 'not_started') {
       return <EventFacilitator {...{ owner }} />

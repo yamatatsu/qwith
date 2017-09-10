@@ -9,20 +9,18 @@ export type UserType = { uid: OwnerKeyType, displayName: string, photoURL: strin
 
 export type EventDataType = { eventTitle: string }
 export type EventsDataType = { [eventKey: EventKeyType]: EventDataType }
-export type QuizDataType = { quizTitle: string }
-export type QuizesDataType = { [eventKey: EventKeyType]: QuizDataType }
 export type QuizContentDataType = {
   qText: string,
   [choice: ChoiceType]: string,
   answerChoice: ChoiceType,
   uid: QuizContentUidType,
 }
-export type QuizContentsDataType = { [eventKey: EventKeyType]: QuizContentDataType[] }
-export type OwnerDataType = {
+export type QuizDataType = { quizTitle: string, quizContents: QuizContentDataType[] }
+export type QuizesDataType = { [eventKey: EventKeyType]: QuizDataType }
+export type OwnerDataType = {|
   events: EventsDataType,
   quizes?: QuizesDataType,
-  quizContents?: QuizContentsDataType,
-}
+|}
 
 export type MemberDataType = {
   quiz: { answers: { [key: number]: ChoiceType } },
