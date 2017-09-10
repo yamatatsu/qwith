@@ -10,16 +10,25 @@ import type { EventKeyType, OwnerDataType, EventDataType, QuizDataType } from '.
 
 type PropsType = {
   owner: ?OwnerDataType,
+  isOpenNewEvent: boolean,
   saveEvent: (eventKey: EventKeyType) => (event: EventDataType) => void,
+  createEvent: () => (event: EventDataType) => void,
   saveQuiz: (eventKey: EventKeyType) => (quiz: QuizDataType) => void,
+  openNewEvent: Function,
 }
-export default ({ owner, saveEvent, saveQuiz }: PropsType) => {
+export default ({ owner, isOpenNewEvent, saveEvent, createEvent, saveQuiz, openNewEvent }: PropsType) => {
   if (!owner) return <BasicTemplate>イベント未登録</BasicTemplate>
 
   const { events, quizes } = owner
   return (
     <BasicTemplate>
       <h1>Settings</h1>
+      <button onClick={openNewEvent}>イベント作成</button>
+
+      {isOpenNewEvent && (
+        <EventForm event={{ eventTitle: '' }} saveEvent={createEvent()} />
+      )}
+
       {_map(events, (event, eventKey) => {
         const quiz = quizes && quizes[eventKey]
         return <Event key={eventKey} {...{ eventKey, event, quiz, saveEvent: saveEvent(eventKey), saveQuiz: saveQuiz(eventKey) }}/>
@@ -44,5 +53,9 @@ const Event = ({ eventKey, event, quiz, saveEvent, saveQuiz }: EventPropsType) =
     <br/>
     <br/>
     <QuizForm quiz={quiz} saveQuiz={saveQuiz} />
+    <br/>
+    <br/>
+    <br/>
+    <br/>
   </div>
 )

@@ -52,6 +52,10 @@ export const observeMember = (eventKey: EventKeyType, memberKey: MemberKeyType, 
 export const setEvent = (ownerKey: OwnerKeyType, eventKey: EventKeyType, event: EventDataType) => {
   getOwnerRef(ownerKey).child(`events/${eventKey}`).set(event)
 }
+export const addEvent = (ownerKey: OwnerKeyType, event: EventDataType) => {
+  const eventKey: EventKeyType = getOwnerRef(ownerKey).child(`events`).push().key
+  setEvent(ownerKey, eventKey, event)
+}
 export const setQuiz = (ownerKey: OwnerKeyType, eventKey: EventKeyType, quiz: QuizDataType) => {
   getOwnerRef(ownerKey).child(`quizes/${eventKey}`).set(quiz)
 }

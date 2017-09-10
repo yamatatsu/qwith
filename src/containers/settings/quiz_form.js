@@ -24,7 +24,7 @@ export default ({ quiz, saveQuiz }: PropsType) => {
           <TextField field="quizTitle" label="クイズタイトル" />
 
           <div>
-            {!values.quizContents.length ? (
+            {!values.quizContents ? (
               <em>クイズを追加してください</em>
             ) : values.quizContents.map((quizContents, i) => (
               <div key={i}>
