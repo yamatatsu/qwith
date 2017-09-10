@@ -12,7 +12,9 @@ export const EventFacilitator = ({ owner }: EventFacilitatorPropsType) => {
   return (
     <BasicTemplate>
       <h1>{event.eventTitle}</h1>
-      <QRCode value={`${urlBase}/${eventKey}/member`} style={{ marginLeft: 20 }} />
+      <div style={{ margin: 20 }}>
+        <QRCode value={`${urlBase}/${eventKey}/member`} />
+      </div>
       <button onClick={() => beginQuiz()}>
         {quiz.quizTitle}を始める
       </button>
