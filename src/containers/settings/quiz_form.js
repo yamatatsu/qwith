@@ -5,6 +5,7 @@ import IconButton from 'material-ui/IconButton'
 import DoneIcon from 'material-ui-icons/Done'
 import UndoIcon from 'material-ui-icons/Undo'
 import TextField from '../../components/atoms/text_field'
+import RadioField from '../../components/atoms/radio_field'
 import type { QuizDataType } from '../../types'
 
 type PropsType = { quiz: ?QuizDataType, saveQuiz: (quiz: QuizDataType) => void }
@@ -32,7 +33,7 @@ export default ({ quiz, saveQuiz }: PropsType) => {
                 {['a', 'b', 'c', 'd'].map(choice => (
                   <TextField field={`quizContents.${i}.${choice}`} label={choice} key={choice} />
                 ))}
-                <TextField field={`quizContents.${i}.answerChoice`} label="答え" />
+                <RadioField field={`quizContents.${i}.answerChoice`} label="答え" choices={['a', 'b', 'c', 'd']} />
 
                 <button type='button' onClick={() => removeValue('quizContents', i)} >
                   クイズを削除
