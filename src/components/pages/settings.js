@@ -17,9 +17,6 @@ type PropsType = {
   openNewEvent: Function,
 }
 export default ({ owner, isOpenNewEvent, saveEvent, createEvent, saveQuiz, openNewEvent }: PropsType) => {
-  if (!owner) return <BasicTemplate>イベント未登録</BasicTemplate>
-
-  const { events, quizes } = owner
   return (
     <BasicTemplate>
       <h1>Settings</h1>
@@ -29,8 +26,8 @@ export default ({ owner, isOpenNewEvent, saveEvent, createEvent, saveQuiz, openN
         <EventForm event={{ eventTitle: '' }} saveEvent={createEvent()} />
       )}
 
-      {_map(events, (event, eventKey) => {
-        const quiz = quizes && quizes[eventKey]
+      {owner && _map(owner.events, (event, eventKey) => {
+        const quiz = owner && owner.quizes && owner.quizes[eventKey]
         return <Event key={eventKey} {...{ eventKey, event, quiz, saveEvent: saveEvent(eventKey), saveQuiz: saveQuiz(eventKey) }}/>
       })}
     </BasicTemplate>

@@ -12,9 +12,8 @@ type StateType = { isOpenNewEvent: boolean }
 class Container extends Component<PropsType, StateType> {
   state = { isOpenNewEvent: false }
 
-  openNewEvent() {
-    this.setState({ ...this.state, isOpenNewEvent: true })
-  }
+  openNewEvent() { this.setState({ ...this.state, isOpenNewEvent: true }) }
+  closeNewEvent() { this.setState({ ...this.state, isOpenNewEvent: false }) }
 
   render() {
     const { user, owner } = this.props
@@ -23,6 +22,7 @@ class Container extends Component<PropsType, StateType> {
 
     const saveEvent = (eventKey: EventKeyType) => (event: EventDataType) => {
       setEvent(ownerKey, eventKey, event)
+      this.closeNewEvent()
     }
     const createEvent = () => (event: EventDataType) => {
       addEvent(ownerKey, event)
