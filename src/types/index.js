@@ -23,6 +23,7 @@ export type OwnerDataType = {|
 |}
 
 export type MemberDataType = {
+  nickname: ?string,
   quiz: { answers: { [key: number]: ChoiceType } },
 }
 export type EventStatusDataType = {

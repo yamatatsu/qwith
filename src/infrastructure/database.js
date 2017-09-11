@@ -65,6 +65,9 @@ export const setEventStatus = (eventKey: EventKeyType, eventStatus: EventStatusD
 export const resetEventStatus = (eventKey: EventKeyType) => {
   getEventStatusRef(eventKey).set(null)
 }
+export const setMember = (eventKey: EventKeyType, memberKey: MemberKeyType, member: MemberDataType) => {
+  getMemberRef(eventKey, memberKey).set(member)
+}
 export const setAnswer = (eventKey: EventKeyType, memberKey: MemberKeyType, quizContentIndex: number, choice: ChoiceType) => {
   getAnswersRef(eventKey, memberKey).update({ [quizContentIndex]: choice })
 }
