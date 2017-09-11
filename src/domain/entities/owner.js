@@ -1,5 +1,5 @@
 // @flow
-import { setEventStatus, resetEventStatus, resetMembers } from '../../infrastructure/database'
+import { setEventStatus, resetEventStatus, resetMembers, TIMESTAMP } from '../../infrastructure/database'
 
 import type { EventKeyType, OwnerDataType, EventDataType, QuizDataType } from '../../types'
 import type { EventStatusType } from './eventStatus'
@@ -31,6 +31,7 @@ export default (eventKey: EventKeyType, owner: ?OwnerDataType): ReturnType => {
       quizContentIndex: index,
       quizContent: quiz.quizContents[index],
       quizContentIndexMax: quiz.quizContents.length,
+      quizContentStartAt: TIMESTAMP,
     })
   }
 

@@ -1,4 +1,5 @@
 // @flow
+import * as firebase from 'firebase'
 import firebaseApp from './firebase_app'
 import Cookies from 'js-cookie'
 
@@ -86,3 +87,5 @@ export const getMemberKey = (eventKey: EventKeyType) => {
   Cookies.set(MEMBER_KEY_COOKIE_NAME, memberKey, { expires: 30 })
   return memberKey
 }
+
+export const TIMESTAMP = firebase.database.ServerValue.TIMESTAMP

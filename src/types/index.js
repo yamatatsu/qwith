@@ -30,6 +30,7 @@ export type EventStatusDataType = {
   quizContentIndex: number,
   quizContent: QuizContentDataType,
   quizContentIndexMax: number,
+  quizContentStartAt: number,
 }
 
 export type DataType = {
