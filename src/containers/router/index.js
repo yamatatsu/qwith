@@ -8,7 +8,7 @@ import Settings from '../settings_container'
 import Controller from '../controller_container'
 import Member from '../member_container'
 
-export default () => {
+const Router = () => {
   return (
     <BrowserRouter>
       {renderRoutes([
@@ -22,3 +22,4 @@ export default () => {
     </BrowserRouter>
   )
 }
+export default Router

@@ -19,7 +19,7 @@ type PropsType = {
 }
 type StateType = {}
 
-class Container extends Component<PropsType, StateType> {
+class ControllerContainer extends Component<PropsType, StateType> {
   render() {
     const { match, owner: ownerData, eventStatus: eventStatusData, members: membersData } = this.props
     const { eventKey } = match.params
@@ -47,4 +47,4 @@ class Container extends Component<PropsType, StateType> {
   }
 }
 
-export default withUser(withEventStatus(withMembers(Container)))
+export default withUser(withEventStatus(withMembers(ControllerContainer)))

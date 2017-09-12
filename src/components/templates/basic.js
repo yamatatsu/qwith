@@ -3,7 +3,7 @@ import React from 'react'
 import { signOut } from '../../infrastructure/auth'
 
 type PropsType = { children: * }
-export default ({ children }: PropsType) => (
+const BasicTemplate = ({ children }: PropsType) => (
   <div>
     <div>
       <button onClick={signOut}>ログアウト</button>
@@ -11,3 +11,4 @@ export default ({ children }: PropsType) => (
     {children}
   </div>
 )
+export default BasicTemplate
