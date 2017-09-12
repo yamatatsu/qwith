@@ -30,7 +30,7 @@ export default (eventKey: EventKeyType, owner: ?OwnerDataType): ReturnType => {
     setEventStatus(eventKey, {
       quizContentIndex: index,
       quizContent: quiz.quizContents[index],
-      quizContentIndexMax: quiz.quizContents.length,
+      quizContentIndexMax: quiz.quizContents.length - 1,
       quizContentStartAt: TIMESTAMP,
     })
   }

@@ -18,7 +18,7 @@ export default (eventKey: EventKeyType, memberKey: MemberKeyType, eventStatus: ?
 
   if (!eventStatus) return 'has_no_event_status'
   const { quizContentIndex } = eventStatus
-  const myAnswer = member && member.quiz && member.quiz.answers[quizContentIndex].choice
+  const myAnswer = member && member.quiz && member.quiz.answers[quizContentIndex] && member.quiz.answers[quizContentIndex].choice
 
   return {
     nickname,

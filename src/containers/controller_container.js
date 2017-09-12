@@ -1,24 +1,27 @@
 // @flow
 import React, { Component } from 'react'
-
+import _map from 'lodash/map'
+import _sortBy from 'lodash/sortBy'
 import withUser from './observers/user_observer'
 import withEventStatus from './observers/event_status_observer'
+import withMembers from './observers/members_observer'
 import createOwner from '../domain/entities/owner'
 import createEventStatus from '../domain/entities/eventStatus'
 import { EventFacilitator, QuizeFacilitator } from '../components/pages/controller'
 
-import type { MatchType, EventKeyType, OwnerDataType, EventStatusDataType } from '../types'
+import type { MatchType, EventKeyType, OwnerDataType, EventStatusDataType, MembersDataType, MemberDataType } from '../types'
 
 type PropsType = {
   match: MatchType<{ eventKey: EventKeyType }>,
   owner: ?OwnerDataType,
   eventStatus: ?EventStatusDataType,
+  members: ?MembersDataType,
 }
 type StateType = {}
 
 class Container extends Component<PropsType, StateType> {
   render() {
-    const { match, owner: ownerData, eventStatus: eventStatusData } = this.props
+    const { match, owner: ownerData, eventStatus: eventStatusData, members: membersData } = this.props
     const { eventKey } = match.params
 
     const owner = createOwner(eventKey, ownerData)
@@ -31,8 +34,17 @@ class Container extends Component<PropsType, StateType> {
     if (eventStatus === 'not_started') {
       return <EventFacilitator {...{ owner }} />
     }
-    return <QuizeFacilitator {...{ owner, eventStatus }} />
+
+    const members = _sortBy(
+      _map(membersData, (m: MemberDataType, k) => ({
+        nickname: m.nickname,
+        time: m.quiz && m.quiz.answers[eventStatus.quizContentIndex] && (m.quiz.answers[eventStatus.quizContentIndex].answeredAt - eventStatus.quizContentStartAt) / 1000
+      })),
+      'time',
+    )
+
+    return <QuizeFacilitator {...{ owner, eventStatus, members }} />
   }
 }
 
-export default withUser(withEventStatus(Container))
+export default withUser(withEventStatus(withMembers(Container)))

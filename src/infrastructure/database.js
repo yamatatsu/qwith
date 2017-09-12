@@ -11,6 +11,7 @@ import type {
   OwnerDataType,
   EventDataType,
   QuizDataType,
+  MembersDataType,
   MemberDataType,
   EventStatusDataType,
   AnswerDataType
@@ -28,10 +29,10 @@ const getMembersRef = (eventKey: EventKeyType) =>
   ref.child(`members/${eventKey}`)
 
 const getMemberRef = (eventKey: EventKeyType, memberKey: MemberKeyType) =>
-  ref.child(`members/${eventKey}/${memberKey}`)
+  getMembersRef(eventKey).child(`${memberKey}`)
 
 const getAnswersRef = (eventKey: EventKeyType, memberKey: MemberKeyType) =>
-  ref.child(`members/${eventKey}/${memberKey}/quiz/answers`)
+  getMemberRef(eventKey, memberKey).child(`quiz/answers`)
 
 export const observeOwner = (ownerKey: OwnerKeyType, callback: (owner: OwnerDataType) => void) => {
   getOwnerRef(ownerKey).on('value', (snapshot) => {
@@ -40,6 +41,11 @@ export const observeOwner = (ownerKey: OwnerKeyType, callback: (owner: OwnerData
 }
 export const observeEventStatus = (eventKey: EventKeyType, callback: (eventStatus: EventStatusDataType) => void) => {
   getEventStatusRef(eventKey).on('value', (snapshot) => {
+    callback(snapshot.val())
+  })
+}
+export const observeMembers = (eventKey: EventKeyType, callback: (member: MembersDataType) => void) => {
+  getMembersRef(eventKey).on('value', (snapshot) => {
     callback(snapshot.val())
   })
 }

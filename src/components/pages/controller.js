@@ -2,6 +2,7 @@
 import React from 'react'
 import QRCode from  'qrcode.react'
 import BasicTemplate from '../templates/basic'
+import QuizContent from '../organisms/quiz_content'
 import type { OwnerType } from '../../domain/entities/owner'
 import type { EventStatusType } from '../../domain/entities/eventStatus'
 
@@ -22,23 +23,20 @@ export const EventFacilitator = ({ owner }: EventFacilitatorPropsType) => {
   )
 }
 
-type QuizeFacilitatorPropsType = { owner: OwnerType, eventStatus: EventStatusType }
-export const QuizeFacilitator = ({ owner, eventStatus }: QuizeFacilitatorPropsType) => {
+type QuizeFacilitatorPropsType = { owner: OwnerType, eventStatus: EventStatusType, members: Object[] }
+export const QuizeFacilitator = ({ owner, eventStatus, members }: QuizeFacilitatorPropsType) => {
   const { event, continueQuiz, finishQuiz, resetMembers } = owner
-  const { quizContentIndex, quizContent, quizContentIndexMax, hasNoNext } = eventStatus
+  const { hasNoNext } = eventStatus
 
   return (
     <BasicTemplate>
       <h1>{event.eventTitle}</h1>
-      <h3>{quizContent.qText}</h3>
+      <QuizContent eventStatus={eventStatus} />
       <ul>
-        {['a', 'b', 'c', 'd'].map((choice) => (
-          <li key={choice}>
-            {choice}: {quizContent[choice]}
-          </li>
+        {members.map((m, i) => (
+          <li key={i}>{i + 1}位: {m.nickname}さん {m.time}秒</li>
         ))}
       </ul>
-      <div>{quizContentIndex + 1}問目 / {quizContentIndexMax}問中</div>
       <button onClick={() => continueQuiz(eventStatus)} disabled={hasNoNext}>次のクイズに進む</button>
       <br/><br/><br/>
       <button onClick={finishQuiz}>クイズを終える</button><br/>

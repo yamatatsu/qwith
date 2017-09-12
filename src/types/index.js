@@ -28,6 +28,8 @@ export type MemberDataType = {
   nickname: ?string,
   quiz: { answers: AnswersDataType },
 }
+export type MembersDataType = { [memberKey: MemberKeyType]: MemberDataType }
+
 export type EventStatusDataType = {
   quizContentIndex: number,
   quizContent: QuizContentDataType,
@@ -38,11 +40,7 @@ export type EventStatusDataType = {
 export type DataType = {
   owners: { [ownerKey: OwnerKeyType]: OwnerDataType },
   eventStatus: { [eventKey: EventKeyType]: EventStatusDataType },
-  members: {
-    [eventKey: EventKeyType]: {
-      [memberKey: MemberKeyType]: MemberDataType,
-    },
-  },
+  members: { [eventKey: EventKeyType]: MembersDataType },
 }
 
 export type MatchType<P> = {
