@@ -1,5 +1,5 @@
 // @flow
-import { setAnswer } from '../../infrastructure/database'
+import { setAnswer, TIMESTAMP } from '../../infrastructure/database'
 
 import type { EventStatusDataType, MemberKeyType, MemberDataType, EventKeyType, ChoiceType } from '../../types'
 
@@ -18,12 +18,12 @@ export default (eventKey: EventKeyType, memberKey: MemberKeyType, eventStatus: ?
 
   if (!eventStatus) return 'has_no_event_status'
   const { quizContentIndex } = eventStatus
-  const myAnswer = member && member.quiz && member.quiz.answers[quizContentIndex]
+  const myAnswer = member && member.quiz && member.quiz.answers[quizContentIndex].choice
 
   return {
     nickname,
     eventStatus,
     myAnswer,
-    answer: (choice: ChoiceType) => setAnswer(eventKey, memberKey, quizContentIndex, choice),
+    answer: (choice: ChoiceType) => setAnswer(eventKey, memberKey, quizContentIndex, { choice, answeredAt: TIMESTAMP }),
   }
 }

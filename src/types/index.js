@@ -22,9 +22,11 @@ export type OwnerDataType = {|
   quizes?: QuizesDataType,
 |}
 
+export type AnswerDataType = { choice: ChoiceType, answeredAt: number }
+export type AnswersDataType = { [key: number]: AnswerDataType }
 export type MemberDataType = {
   nickname: ?string,
-  quiz: { answers: { [key: number]: ChoiceType } },
+  quiz: { answers: AnswersDataType },
 }
 export type EventStatusDataType = {
   quizContentIndex: number,

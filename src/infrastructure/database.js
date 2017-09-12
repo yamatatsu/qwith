@@ -13,8 +13,7 @@ import type {
   QuizDataType,
   MemberDataType,
   EventStatusDataType,
-
-  ChoiceType
+  AnswerDataType
 } from '../types'
 
 const ref = firebaseApp.database().ref()
@@ -69,8 +68,8 @@ export const resetEventStatus = (eventKey: EventKeyType) => {
 export const setMember = (eventKey: EventKeyType, memberKey: MemberKeyType, member: MemberDataType) => {
   getMemberRef(eventKey, memberKey).set(member)
 }
-export const setAnswer = (eventKey: EventKeyType, memberKey: MemberKeyType, quizContentIndex: number, choice: ChoiceType) => {
-  getAnswersRef(eventKey, memberKey).update({ [quizContentIndex]: choice })
+export const setAnswer = (eventKey: EventKeyType, memberKey: MemberKeyType, quizContentIndex: number, answer: AnswerDataType) => {
+  getAnswersRef(eventKey, memberKey).update({ [quizContentIndex]: answer })
 }
 export const resetMembers = (eventKey: EventKeyType) => {
   getMembersRef(eventKey).set(null)
