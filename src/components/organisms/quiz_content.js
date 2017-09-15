@@ -1,9 +1,9 @@
 // @flow
 import React from 'react'
-import type { EventStatusType } from '../../domain/entities/eventStatus'
+import type { EventStatusDataType } from '../../types'
 
 
-type PropsType = { eventStatus: EventStatusType }
+type PropsType = { eventStatus: EventStatusDataType }
 
 const QuizContent = ({ eventStatus }: PropsType) => {
   const { quizContentIndex, quizContent, quizContentIndexMax } = eventStatus

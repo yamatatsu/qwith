@@ -1,15 +1,12 @@
 // @flow
-import React, { Component } from 'react'
-import _map from 'lodash/map'
-import _sortBy from 'lodash/sortBy'
+import React from 'react'
+import { setEventStatus, resetEventStatus, resetMembers, TIMESTAMP } from '../infrastructure/database'
 import withUser from './observers/user_observer'
 import withEventStatus from './observers/event_status_observer'
 import withMembers from './observers/members_observer'
-import createOwner from '../domain/entities/owner'
-import createEventStatus from '../domain/entities/eventStatus'
 import { EventFacilitator, QuizeFacilitator } from '../components/pages/controller'
 
-import type { MatchType, EventKeyType, OwnerDataType, EventStatusDataType, MembersDataType, MemberDataType } from '../types'
+import type { MatchType, EventKeyType, OwnerDataType, QuizDataType, EventStatusDataType, MembersDataType } from '../types'
 
 type PropsType = {
   match: MatchType<{ eventKey: EventKeyType }>,
@@ -17,34 +14,61 @@ type PropsType = {
   eventStatus: ?EventStatusDataType,
   members: ?MembersDataType,
 }
-type StateType = {}
 
-class ControllerContainer extends Component<PropsType, StateType> {
-  render() {
-    const { match, owner: ownerData, eventStatus: eventStatusData, members: membersData } = this.props
-    const { eventKey } = match.params
+const ControllerContainer = (props: PropsType) => {
+  const q = query(props)
 
-    const owner = createOwner(eventKey, ownerData)
-    const eventStatus = createEventStatus(eventStatusData)
+  if (q === 'no_owner') throw new Error("異常系として検知したい") // TODO:
+  if (q === 'no_event') throw new Error("404にしたい") // TODO:
+  if (q === 'no_quiz') return <div>クイズが未登録です</div>
 
-    if (owner === 'has_no_owner') throw new Error("異常系として検知したい") // TODO:
-    if (owner === 'has_no_event') throw new Error("404にしたい") // TODO:
-    if (owner === 'has_no_quiz') return <div>クイズが未登録です</div>
+  const { eventKey, event, quiz, eventStatus, members } = q
+  const { beginQuiz, continueQuiz, finishQuiz, resetMembers } = createCommands(eventKey, quiz, eventStatus)
 
-    if (eventStatus === 'not_started') {
-      return <EventFacilitator {...{ owner }} />
-    }
-
-    const members = _sortBy(
-      _map(membersData, (m: MemberDataType, k) => ({
-        nickname: m.nickname,
-        time: m.quiz && m.quiz.answers[eventStatus.quizContentIndex] && (m.quiz.answers[eventStatus.quizContentIndex].answeredAt - eventStatus.quizContentStartAt) / 1000
-      })),
-      'time',
-    )
-
-    return <QuizeFacilitator {...{ owner, eventStatus, members }} />
+  if (!eventStatus) {
+    return <EventFacilitator {...{ eventKey, event, quiz, beginQuiz }} />
   }
+
+  return <QuizeFacilitator {...{ event, eventStatus, members, continueQuiz, finishQuiz, resetMembers }} />
 }
 
 export default withUser(withEventStatus(withMembers(ControllerContainer)))
+
+//////////////////////////
+// private
+
+const query = (props: PropsType) => {
+  const { match, owner, eventStatus, members } = props
+  const { eventKey } = match.params
+
+  if (!owner) return 'no_owner'
+
+  const { events, quizes } = owner
+  const event = events[eventKey]
+  const quiz = quizes && quizes[eventKey]
+
+  if (!event) return 'no_event'
+  if (!quiz) return 'no_quiz'
+
+  return { eventKey, event, quiz, eventStatus, members }
+}
+
+const createCommands = (eventKey: EventKeyType, quiz: QuizDataType, eventStatus: ?EventStatusDataType) => {
+  const changeQuiz = (index: number) => {
+    setEventStatus(eventKey, {
+      quizContentIndex: index,
+      quizContent: quiz.quizContents[index],
+      quizContentIndexMax: quiz.quizContents.length - 1,
+      quizContentStartAt: TIMESTAMP,
+    })
+  }
+
+  const nextQuizContentIndex = eventStatus ? eventStatus.quizContentIndex + 1 : 1
+
+  return {
+    beginQuiz: () => changeQuiz(0),
+    continueQuiz: () => changeQuiz(nextQuizContentIndex),
+    finishQuiz: () => resetEventStatus(eventKey),
+    resetMembers: () => resetMembers(eventKey),
+  }
+}
