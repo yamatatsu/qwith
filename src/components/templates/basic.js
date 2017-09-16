@@ -5,18 +5,20 @@ import AppBar from 'material-ui/AppBar'
 import Toolbar from 'material-ui/Toolbar'
 import Typography from 'material-ui/Typography'
 import Button from 'material-ui/Button'
-import { signOut } from '../../infrastructure/auth'
 
-type PropsType = { children: * }
-const BasicTemplate = ({ children }: PropsType) => (
+type PropsType = { children: *, signOut?: Function }
+
+const BasicTemplate = ({ children, signOut }: PropsType) => (
   <div>
-    <Header />
-    {children}
+    <Header {...{ signOut }} />
+    <div>
+      {children}
+    </div>
   </div>
 )
 export default BasicTemplate
 
-const Header = () => (
+const Header = ({ signOut }) => (
   <AppBar position="static">
     <Toolbar>
       <Grid container justify="space-between" align="center">
@@ -26,7 +28,7 @@ const Header = () => (
           </Typography>
         </Grid>
         <Grid>
-          <Button color="contrast" onClick={signOut}>ログアウト</Button>
+          {signOut && <Button color="contrast" onClick={signOut}>ログアウト</Button>}
         </Grid>
       </Grid>
     </Toolbar>

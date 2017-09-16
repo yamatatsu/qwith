@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react'
 import type { ComponentType } from 'react'
-import { observeAuth } from '../../infrastructure/auth'
+import { observeAuth, signOut } from '../../infrastructure/auth'
 import { observeOwner } from '../../infrastructure/database'
 import Login from '../../components/pages/login'
 
@@ -42,7 +42,7 @@ export default (WrappedComponent: ComponentType<*>): ComponentType<*> => {
       if (!user) return <Login />
       if (user === 'not_feached' || owner === 'not_feached') return <div>データ取得中</div> // TODO: くるくる
 
-      return <WrappedComponent {...this.props} {...{ user, owner }} />
+      return <WrappedComponent {...this.props} {...{ user, owner, signOut }} />
     }
   }
 }

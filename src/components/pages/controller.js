@@ -2,49 +2,54 @@
 import React from 'react'
 import _ from 'lodash'
 import QRCode from  'qrcode.react'
+// import Grid from 'material-ui/Grid'
+import AppBar from 'material-ui/AppBar'
+import Toolbar from 'material-ui/Toolbar'
+import Typography from 'material-ui/Typography'
 import BasicTemplate from '../templates/basic'
 import QuizContent from '../organisms/quiz_content'
 import type { EventKeyType, EventDataType, QuizDataType, EventStatusDataType, MembersDataType, MemberDataType } from '../../types'
 
-type EventFacilitatorPropsType = {
+type PropsType = {
   eventKey: EventKeyType,
   event: EventDataType,
   quiz: QuizDataType,
-  beginQuiz: Function,
-}
-export const EventFacilitator = ({ eventKey, event, quiz, beginQuiz }: EventFacilitatorPropsType) => {
-  const urlBase: string = process.env.REACT_APP_URL_BASE || ''
-  return (
-    <BasicTemplate>
-      <h1>{event.eventTitle}</h1>
-      <div style={{ margin: 20 }}>
-        <QRCode value={`${urlBase}/${eventKey}/member`} />
-      </div>
-      <button onClick={() => beginQuiz()}>
-        {quiz.quizTitle}を始める
-      </button>
-    </BasicTemplate>
-  )
-}
-
-type QuizeFacilitatorPropsType = {
-  event: EventDataType,
-  eventStatus: EventStatusDataType,
+  eventStatus: ?EventStatusDataType,
   members: ?MembersDataType,
+  beginQuiz: Function,
   continueQuiz: Function,
   finishQuiz: Function,
   resetMembers: Function,
+  signOut: Function,
 }
-export const QuizeFacilitator = (props: QuizeFacilitatorPropsType) => {
-  const { event, eventStatus, members, continueQuiz, finishQuiz, resetMembers } = props
-  const isLastQuizContent = eventStatus.quizContentIndexMax === eventStatus.quizContentIndex
+const QuizeFacilitator = (props: PropsType) => {
+  const { eventKey, event, quiz, eventStatus, members, beginQuiz, continueQuiz, finishQuiz, resetMembers, signOut } = props
+  const isLastQuizContent = !!eventStatus && (eventStatus.quizContentIndexMax === eventStatus.quizContentIndex)
+  const urlBase: string = process.env.REACT_APP_URL_BASE || ''
 
   return (
-    <BasicTemplate>
-      <h1>{event.eventTitle}</h1>
-      <QuizContent eventStatus={eventStatus} />
+    <BasicTemplate signOut={signOut}>
+      <AppBar position="static" style={{ marginTop: 20 }}>
+        <Toolbar>
+          <Typography type="title" color="inherit">
+            {event.eventTitle}
+          </Typography>
+        </Toolbar>
+      </AppBar>
+
+      {!eventStatus && (
+        <div>
+          <QRCode value={`${urlBase}/${eventKey}/member`} />
+          <button onClick={() => beginQuiz()}>
+            {quiz.quizTitle}を始める
+          </button>
+        </div>
+      )}
+
+      {eventStatus && <QuizContent eventStatus={eventStatus} />}
+
       <ul>
-        {_.chain(members)
+        {eventStatus && _.chain(members)
           .map((m: MemberDataType) => ({
             nickname: m.nickname,
             time: m.quiz && m.quiz.answers[eventStatus.quizContentIndex] && (m.quiz.answers[eventStatus.quizContentIndex].answeredAt - eventStatus.quizContentStartAt) / 1000
@@ -63,3 +68,5 @@ export const QuizeFacilitator = (props: QuizeFacilitatorPropsType) => {
     </BasicTemplate>
   )
 }
+
+export default QuizeFacilitator

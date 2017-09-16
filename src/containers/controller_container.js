@@ -4,7 +4,7 @@ import { setEventStatus, resetEventStatus, resetMembers, TIMESTAMP } from '../in
 import withUser from './observers/user_observer'
 import withEventStatus from './observers/event_status_observer'
 import withMembers from './observers/members_observer'
-import { EventFacilitator, QuizeFacilitator } from '../components/pages/controller'
+import Page from '../components/pages/controller'
 
 import type { MatchType, EventKeyType, OwnerDataType, QuizDataType, EventStatusDataType, MembersDataType } from '../types'
 
@@ -13,6 +13,7 @@ type PropsType = {
   owner: ?OwnerDataType,
   eventStatus: ?EventStatusDataType,
   members: ?MembersDataType,
+  signOut: Function,
 }
 
 const ControllerContainer = (props: PropsType) => {
@@ -22,14 +23,21 @@ const ControllerContainer = (props: PropsType) => {
   if (q === 'no_event') throw new Error("404にしたい") // TODO:
   if (q === 'no_quiz') return <div>クイズが未登録です</div>
 
-  const { eventKey, event, quiz, eventStatus, members } = q
+  const { eventKey, event, quiz, eventStatus, members, signOut } = q
   const { beginQuiz, continueQuiz, finishQuiz, resetMembers } = createCommands(eventKey, quiz, eventStatus)
 
-  if (!eventStatus) {
-    return <EventFacilitator {...{ eventKey, event, quiz, beginQuiz }} />
-  }
-
-  return <QuizeFacilitator {...{ event, eventStatus, members, continueQuiz, finishQuiz, resetMembers }} />
+  return <Page {...{
+    eventKey,
+    event,
+    quiz,
+    eventStatus,
+    members,
+    beginQuiz,
+    continueQuiz,
+    finishQuiz,
+    resetMembers,
+    signOut,
+  }} />
 }
 
 export default withUser(withEventStatus(withMembers(ControllerContainer)))
@@ -38,7 +46,7 @@ export default withUser(withEventStatus(withMembers(ControllerContainer)))
 // private
 
 const query = (props: PropsType) => {
-  const { match, owner, eventStatus, members } = props
+  const { match, owner, eventStatus, members, signOut } = props
   const { eventKey } = match.params
 
   if (!owner) return 'no_owner'
@@ -50,7 +58,7 @@ const query = (props: PropsType) => {
   if (!event) return 'no_event'
   if (!quiz) return 'no_quiz'
 
-  return { eventKey, event, quiz, eventStatus, members }
+  return { eventKey, event, quiz, eventStatus, members, signOut }
 }
 
 const createCommands = (eventKey: EventKeyType, quiz: QuizDataType, eventStatus: ?EventStatusDataType) => {
