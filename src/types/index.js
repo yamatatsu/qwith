@@ -12,7 +12,7 @@ export type EventsDataType = { [eventKey: EventKeyType]: EventDataType }
 export type QuizContentDataType = {
   qText: string,
   [choice: ChoiceType]: string,
-  answerChoice: ChoiceType,
+  correctChoice: ChoiceType,
   uid: QuizContentUidType,
 }
 export type QuizDataType = { quizTitle: string, quizContents: QuizContentDataType[] }

@@ -33,7 +33,7 @@ export default ({ quiz, saveQuiz }: PropsType) => {
                 {['a', 'b', 'c', 'd'].map(choice => (
                   <TextField field={`quizContents.${i}.${choice}`} label={choice} key={choice} />
                 ))}
-                <RadioField field={`quizContents.${i}.answerChoice`} label="答え" choices={['a', 'b', 'c', 'd']} />
+                <RadioField field={`quizContents.${i}.correctChoice`} label="答え" choices={['a', 'b', 'c', 'd']} />
 
                 <button type='button' onClick={() => removeValue('quizContents', i)} >
                   クイズを削除

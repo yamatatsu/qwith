@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import React, { Component } from 'react'
 import { setEventStatus, resetEventStatus, resetMembers, TIMESTAMP } from '../infrastructure/database'
 import withUser from './observers/user_observer'
 import withEventStatus from './observers/event_status_observer'
@@ -15,29 +15,44 @@ type PropsType = {
   members: ?MembersDataType,
   signOut: Function,
 }
+type StateType = {
+  tabIndex: number,
+}
 
-const ControllerContainer = (props: PropsType) => {
-  const q = query(props)
+class ControllerContainer extends Component<PropsType, StateType> {
+  state = {
+    tabIndex: 0,
+  }
 
-  if (q === 'no_owner') throw new Error("異常系として検知したい") // TODO:
-  if (q === 'no_event') throw new Error("404にしたい") // TODO:
-  if (q === 'no_quiz') return <div>クイズが未登録です</div>
+  changeTabIndex(tabIndex) {
+    this.setState({ ...this.state, tabIndex })
+  }
 
-  const { eventKey, event, quiz, eventStatus, members, signOut } = q
-  const { beginQuiz, continueQuiz, finishQuiz, resetMembers } = createCommands(eventKey, quiz, eventStatus)
+  render() {
+    const q = query(this.props)
 
-  return <Page {...{
-    eventKey,
-    event,
-    quiz,
-    eventStatus,
-    members,
-    beginQuiz,
-    continueQuiz,
-    finishQuiz,
-    resetMembers,
-    signOut,
-  }} />
+    if (q === 'no_owner') throw new Error("異常系として検知したい") // TODO:
+    if (q === 'no_event') throw new Error("404にしたい") // TODO:
+    if (q === 'no_quiz') return <div>クイズが未登録です</div>
+
+    const { eventKey, event, quiz, eventStatus, members, signOut } = q
+    const { beginQuiz, continueQuiz, finishQuiz, resetMembers } = createCommands(eventKey, quiz, eventStatus)
+
+    return <Page {...{
+      eventKey,
+      event,
+      quiz,
+      eventStatus,
+      members,
+      beginQuiz,
+      continueQuiz,
+      finishQuiz,
+      resetMembers,
+      signOut,
+      tabIndex: this.state.tabIndex,
+      changeTabIndex: (_, tabIndex) => this.changeTabIndex(tabIndex),
+    }} />
+  }
 }
 
 export default withUser(withEventStatus(withMembers(ControllerContainer)))
