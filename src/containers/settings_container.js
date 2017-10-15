@@ -27,7 +27,7 @@ class Container extends Component<PropsType, StateType> {
 
     const startEvent = (quizKey: QuizKeyType, quiz: QuizDataType) => () =>{
       setEvent(ownerKey, {
-        status: 'not_started',
+        status: 'no_quiz_started',
         quizKey: quizKey,
         quizContentIndex: 0,
         quiz: quiz,

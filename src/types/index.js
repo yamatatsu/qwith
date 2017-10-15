@@ -3,7 +3,7 @@ import type { OwnerKeyType, QuizKeyType, MemberKeyType, QuizContentUidType, Answ
 export type { OwnerKeyType, QuizKeyType, MemberKeyType, QuizContentUidType, AnswerKeyType }
 
 export type ChoiceType = 'a' | 'b' | 'c' | 'd'
-export type EventStatusType = 'not_started' | 'on' | 'off' | 'finish'
+export type EventStatusType = 'no_quiz_started' | 'on' | 'off' | 'finish'
 
 export type UserType = { uid: OwnerKeyType, displayName: string, photoURL: string }
 

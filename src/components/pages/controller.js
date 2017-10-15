@@ -1,6 +1,7 @@
 // @flow
 import React from 'react'
 import QRCode from  'qrcode.react'
+import { Link } from 'react-router-dom'
 import AppBar from 'material-ui/AppBar'
 import Toolbar from 'material-ui/Toolbar'
 import Tabs, { Tab } from 'material-ui/Tabs'
@@ -72,7 +73,7 @@ const ControllerPage = (props: PropsType) => {
           </AppBar>
           {tabIndex === 0 && (
             <Paper style={{ height: "100%" }}>
-              {event.status === 'not_started' && (
+              {event.status === 'no_quiz_started' && (
                 <div>
                   <QRCode value={`${urlBase}/${ownerKey}/member`} />
                   <button onClick={beginQuiz}>
@@ -81,12 +82,14 @@ const ControllerPage = (props: PropsType) => {
                 </div>
               )}
 
-              {event.status !== 'not_started' && (
+              {event.status !== 'no_quiz_started' && (
                 <div>
                   <QuizContent event={event} />
                   <button onClick={continueQuiz} disabled={isLastQuizContent}>次のクイズに進む</button>
                   <br/><br/><br/>
-                  <button onClick={finishQuiz}>クイズを終える</button><br/>
+                  <Link to={'/settings'} onClick={finishQuiz}>
+                    <button>クイズを終える</button>
+                  </Link>
                 </div>
               )}
             </Paper>
