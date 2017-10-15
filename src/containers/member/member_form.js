@@ -9,7 +9,7 @@ import type { MemberDataType } from '../../types'
 type PropsType = { saveMember: (member: MemberDataType) => void }
 
 export default ({ saveMember }: PropsType) => (
-  <Form onSubmit={saveMember}>
+  <Form defaultValues={{ nickname: '' }} onSubmit={saveMember}>
     {({ submitForm }) => (
       <div>
         <TextField field="nickname" label="ニックネーム" />

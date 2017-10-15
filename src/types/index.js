@@ -1,14 +1,13 @@
 // @flow
-import type { OwnerKeyType, EventKeyType, MemberKeyType, QuizContentUidType } from './keys'
-export type { OwnerKeyType, EventKeyType, MemberKeyType, QuizContentUidType }
+import type { OwnerKeyType, QuizKeyType, MemberKeyType, QuizContentUidType, AnswerKeyType } from './keys'
+export type { OwnerKeyType, QuizKeyType, MemberKeyType, QuizContentUidType, AnswerKeyType }
 
 export type ChoiceType = 'a' | 'b' | 'c' | 'd'
+export type EventStatusType = 'not_started' | 'on' | 'off' | 'finish'
 
 export type UserType = { uid: OwnerKeyType, displayName: string, photoURL: string }
 
 
-export type EventDataType = { eventTitle: string }
-export type EventsDataType = { [eventKey: EventKeyType]: EventDataType }
 export type QuizContentDataType = {
   qText: string,
   [choice: ChoiceType]: string,
@@ -16,31 +15,38 @@ export type QuizContentDataType = {
   uid: QuizContentUidType,
 }
 export type QuizDataType = { quizTitle: string, quizContents: QuizContentDataType[] }
-export type QuizesDataType = { [eventKey: EventKeyType]: QuizDataType }
-export type OwnerDataType = {|
-  events: EventsDataType,
-  quizes?: QuizesDataType,
-|}
+export type QuizesDataType = { [quizKey: QuizKeyType]: QuizDataType }
 
-export type AnswerDataType = { choice: ChoiceType, answeredAt: number }
-export type AnswersDataType = { [key: number]: AnswerDataType }
-export type MemberDataType = {
-  nickname: ?string,
-  quiz: { answers: AnswersDataType },
-}
+export type MemberDataType = { nickname: ?string }
 export type MembersDataType = { [memberKey: MemberKeyType]: MemberDataType }
 
-export type EventStatusDataType = {
+export type AnswerDataType = {
+  quizContentUid: QuizContentUidType,
+  choice: ChoiceType,
+  answeredAt: number,
+  memberKey: MemberKeyType,
+}
+export type AnswersDataType = { [answerKey: AnswerKeyType]: AnswerDataType }
+
+export type EventDataType = {
+  status: EventStatusType,
+  quizKey: QuizKeyType,
   quizContentIndex: number,
+  quiz: QuizDataType,
   quizContent: QuizContentDataType,
   quizContentIndexMax: number,
-  quizContentStartAt: number,
+  quizContentStartAt: ?number,
 }
 
 export type DataType = {
-  owners: { [ownerKey: OwnerKeyType]: OwnerDataType },
-  eventStatus: { [eventKey: EventKeyType]: EventStatusDataType },
-  members: { [eventKey: EventKeyType]: MembersDataType },
+  owners: {
+    [ownerKey: OwnerKeyType]: {|
+      quizes: QuizesDataType,
+      event: ?EventDataType,
+      members: ?MembersDataType,
+      answers: ?AnswersDataType,
+    |}
+  }
 }
 
 export type MatchType<P> = {

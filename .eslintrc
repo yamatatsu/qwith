@@ -1,6 +1,7 @@
 extends: react-app
 globals:
   OwnerKeyType: false
-  EventKeyType: false
+  QuizKeyType: false
   MemberKeyType: false
   QuizContentUidType: false
+  AnswerKeyType: false

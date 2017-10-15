@@ -16,9 +16,9 @@ const Router = () => {
         { component: () => <Redirect to="/login" />, exact: true, path: '/' },
         { component: Login,      exact: true, path: '/login' },
         { component: Settings,   exact: true, path: '/settings' },
-        { component: Controller, exact: true, path: '/:eventKey/controller' },
-        { component: Screen,     exact: true, path: '/:eventKey/screen' },
-        { component: Member,     exact: true, path: '/:eventKey/member' },
+        { component: Controller, exact: true, path: '/controller' },
+        { component: Screen,     exact: true, path: '/screen' },
+        { component: Member,     exact: true, path: '/:ownerKey/member' },
       ])}
     </BrowserRouter>
   )

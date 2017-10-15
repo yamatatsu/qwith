@@ -1,41 +1,43 @@
 // @flow
 import React, { Component } from 'react'
-import { setEvent, addEvent, setQuiz } from '../infrastructure/database'
+import { setQuiz, createQuiz, setEvent } from '../infrastructure/database'
 import withUser from './observers/user_observer'
+import withQuizes from './observers/quizes_observer'
 import Page from '../components/pages/settings'
 
-import type { EventKeyType, UserType, OwnerDataType, EventDataType, QuizDataType } from '../types'
+import type { OwnerKeyType, QuizKeyType, QuizesDataType, QuizDataType } from '../types'
 
-type PropsType = { user: UserType, owner: ?OwnerDataType }
-type StateType = { isOpenNewEvent: boolean }
+type PropsType = {
+  ownerKey: OwnerKeyType,
+  quizes: ?QuizesDataType,
+}
+type StateType = {}
 
 class Container extends Component<PropsType, StateType> {
-  state = { isOpenNewEvent: false }
-
-  openNewEvent() { this.setState({ ...this.state, isOpenNewEvent: true }) }
-  closeNewEvent() { this.setState({ ...this.state, isOpenNewEvent: false }) }
-
   render() {
-    const { user, owner } = this.props
-    const { uid: ownerKey } = user
-    const { isOpenNewEvent } = this.state
+    const { ownerKey, quizes } = this.props
 
-    const saveEvent = (eventKey: EventKeyType) => (event: EventDataType) => {
-      setEvent(ownerKey, eventKey, event)
-      this.closeNewEvent()
-    }
-    const createEvent = () => (event: EventDataType) => {
-      addEvent(ownerKey, event)
-    }
-    const saveQuiz = (eventKey: EventKeyType) => (quiz: QuizDataType) => {
-      setQuiz(ownerKey, eventKey, quiz)
+    const saveQuiz = (quizKey?: QuizKeyType) => (quiz: QuizDataType) => {
+      if (quizKey) {
+        setQuiz(ownerKey, quizKey, quiz)
+      } else {
+        createQuiz(ownerKey, quiz)
+      }
     }
 
-    return <Page {...{
-      owner, isOpenNewEvent, saveEvent, createEvent, saveQuiz,
-      openNewEvent: () => this.openNewEvent()
-    }} />
+    const startEvent = (quizKey: QuizKeyType, quiz: QuizDataType) => () =>{
+      setEvent(ownerKey, {
+        status: 'not_started',
+        quizKey: quizKey,
+        quizContentIndex: 0,
+        quiz: quiz,
+        quizContent: quiz.quizContents[0],
+        quizContentIndexMax: quiz.quizContents.length,
+        quizContentStartAt: null,
+      })
+    }
+
+    return <Page {...{ quizes, saveQuiz, startEvent }} />
   }
 }
-
-export default withUser(Container)
+export default withUser(withQuizes(Container))

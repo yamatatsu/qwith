@@ -2,47 +2,37 @@
 import React, { Component } from 'react'
 import type { ComponentType } from 'react'
 import { observeAuth, signOut } from '../../infrastructure/auth'
-import { observeOwner } from '../../infrastructure/database'
 import Login from '../../components/pages/login'
 
-import type { UserType, OwnerDataType } from '../../types'
+import type { UserType } from '../../types'
 
 type StateType = {
   user: 'not_feached' | ?UserType,
-  owner: 'not_feached' | ?OwnerDataType,
 }
 
 export default (WrappedComponent: ComponentType<*>): ComponentType<*> => {
   return class UserObserver extends Component<*, StateType> {
     state = {
       user: 'not_feached',
-      owner: 'not_feached',
     }
-    removeAuthListener = null
-    removeOwnerListener = null
+    removeListener = null
 
-    componentDidMount() {
-      this.removeAuthListener = observeAuth(user => {
+    componentWillMount() {
+      this.removeListener = observeAuth(user => {
         this.setState({ ...this.state, user })
-
-        if (!user) return
-        this.removeOwnerListener = observeOwner(user.uid, (owner) => {
-          this.setState({ ...this.state, owner })
-        })
       })
     }
     componentWillUnmount () {
-      this.removeAuthListener && this.removeAuthListener()
-      this.removeOwnerListener && this.removeOwnerListener()
+      this.removeListener && this.removeListener()
     }
 
     render() {
-      const { user, owner } = this.state
+      const { user } = this.state
 
       if (!user) return <Login />
-      if (user === 'not_feached' || owner === 'not_feached') return <div>データ取得中</div> // TODO: くるくる
+      if (user === 'not_feached') return <div>データ取得中</div> // TODO: くるくる
 
-      return <WrappedComponent {...this.props} {...{ user, owner, signOut }} />
+      return <WrappedComponent {...this.props} {...{ user, signOut, ownerKey: user.uid }} />
     }
   }
 }

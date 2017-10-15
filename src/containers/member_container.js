@@ -1,60 +1,57 @@
 // @flow
-import React from 'react'
+import React, { Component } from 'react'
 import { setMember, setAnswer, TIMESTAMP } from '../infrastructure/database'
-import withEventStatus from './observers/event_status_observer'
+import withEvent from './observers/event_observer'
 import withMember from './observers/member_observer'
 import MemberForm from './member/member_form'
 import Page from '../components/pages/member'
 
-import type { MatchType, EventKeyType, MemberKeyType, EventStatusDataType, MemberDataType, ChoiceType } from '../types'
+import type {
+  MatchType, ChoiceType,
+  OwnerKeyType, MemberKeyType, QuizContentUidType,
+  EventDataType, MemberDataType,
+} from '../types'
 
 type PropsType = {
-  match: MatchType<{ eventKey: EventKeyType }>,
-  eventStatus: ?EventStatusDataType,
+  ownerKey: OwnerKeyType,
+  event: ?EventDataType,
   memberKey: MemberKeyType,
   member: ?MemberDataType,
 }
+type StateType = {}
 
-const MemberContainer = (props: PropsType) => {
-  const q = query(props)
+class MemberContainer extends Component<PropsType, StateType> {
+  render() {
+    const { ownerKey, event, memberKey, member } = this.props
 
-  if (q === 'no_member') {
-    return <MemberForm {...{ saveMember: createSaveMember(props) }} />
+    if (!event) {
+      return <div>no event</div>
+    }
+    if (!member) {
+      return <MemberForm {...{ saveMember: createSaveMember(ownerKey, memberKey) }} />
+    }
+    if (event.status === 'not_started') {
+      return <div>クイズ開始までお待ち下さい。</div>
+    }
+
+    const answer = createAnswer(ownerKey, memberKey, event.quizContent.uid)
+    return <Page {...{ event, member, answer }} />
   }
-  if (q ==='not_started') {
-    return <div>クイズ開始までお待ち下さい。</div>
-  }
-
-  const { eventKey, memberKey, member, eventStatus, myAnswer } = q
-  const answer = createAnswer(eventKey, memberKey, eventStatus.quizContentIndex)
-  return <Page {...{ member, eventStatus, myAnswer, answer }} />
 }
 
-export default withEventStatus(withMember(MemberContainer))
+const matchParamsToProps = (WrappedComponent) => (props: { match: MatchType<{ ownerKey: OwnerKeyType }> }) => {
+  const { ownerKey } = props.match.params
+  return <WrappedComponent {...props} {...{ ownerKey }} />
+}
+
+export default matchParamsToProps(withMember(withEvent(MemberContainer)))
 
 //////////////////////
 // private
 
-const query = (props: PropsType) => {
-  const { match, memberKey, eventStatus, member } = props
-
-  if (!member) return 'no_member'
-  if (!eventStatus) return 'not_started'
-
-  const { quizContentIndex } = eventStatus
-  const myAnswer = member && member.quiz && member.quiz.answers[quizContentIndex] && member.quiz.answers[quizContentIndex].choice
-
-  const { eventKey } = match.params
-  return { eventKey, memberKey, member, eventStatus, myAnswer }
-}
-
-const createSaveMember = (props: PropsType) => {
-  const { match, memberKey } = props
-  const { eventKey } = match.params
-  return (member) => setMember(eventKey, memberKey, member)
-}
+const createSaveMember = (ownerKey, memberKey) => (member) => setMember(ownerKey, memberKey, member)
 
 const createAnswer =
-  (eventKey, memberKey, quizContentIndex) =>
+  (ownerKey, memberKey, quizContentUid: QuizContentUidType) =>
     (choice: ChoiceType) =>
-      setAnswer(eventKey, memberKey, quizContentIndex, { choice, answeredAt: TIMESTAMP })
+      setAnswer(ownerKey, { quizContentUid, choice, answeredAt: TIMESTAMP, memberKey })

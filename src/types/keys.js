@@ -1,5 +1,6 @@
 // @flow
-export opaque type OwnerKeyType: string = string
-export opaque type EventKeyType: string = string
-export opaque type MemberKeyType: string = string
-export opaque type QuizContentUidType: string = string
+export type OwnerKeyType = string
+export type QuizKeyType = string
+export type MemberKeyType = string
+export type QuizContentUidType = string
+export type AnswerKeyType = string

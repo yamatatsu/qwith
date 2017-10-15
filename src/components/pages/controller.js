@@ -1,6 +1,5 @@
 // @flow
 import React from 'react'
-import _ from 'lodash'
 import QRCode from  'qrcode.react'
 import AppBar from 'material-ui/AppBar'
 import Toolbar from 'material-ui/Toolbar'
@@ -13,25 +12,22 @@ import KeyboardArrowDownIcon from 'material-ui-icons/KeyboardArrowDown'
 
 import BasicTemplate from '../templates/basic'
 import QuizContent from '../organisms/quiz_content'
-import type { EventKeyType, EventDataType, QuizDataType, EventStatusDataType, MembersDataType, MemberDataType } from '../../types'
+import type { OwnerKeyType, EventDataType } from '../../types'
 
 type PropsType = {
-  eventKey: EventKeyType,
+  ownerKey: OwnerKeyType,
   event: EventDataType,
-  quiz: QuizDataType,
-  eventStatus: ?EventStatusDataType,
-  members: ?MembersDataType,
   tabIndex: number,
   beginQuiz: Function,
   continueQuiz: Function,
   finishQuiz: Function,
-  resetMembers: Function,
   signOut: Function,
   changeTabIndex: Function,
 }
 const ControllerPage = (props: PropsType) => {
-  const { eventKey, event, quiz, eventStatus, members, beginQuiz, continueQuiz, finishQuiz, resetMembers, signOut, tabIndex, changeTabIndex } = props
-  const isLastQuizContent = !!eventStatus && (eventStatus.quizContentIndexMax === eventStatus.quizContentIndex)
+  const { ownerKey, event, beginQuiz, continueQuiz, finishQuiz, signOut, tabIndex, changeTabIndex } = props
+  const { quiz } = event
+  const isLastQuizContent = !!event && (event.quizContentIndexMax === event.quizContentIndex)
   const urlBase: string = process.env.REACT_APP_URL_BASE || ''
 
   return (
@@ -39,7 +35,7 @@ const ControllerPage = (props: PropsType) => {
       <AppBar position="static" style={{ marginTop: 20, marginBottom: 20 }} color="default">
         <Toolbar>
           <Typography type="title" color="inherit">
-            {event.eventTitle}
+            {quiz.quizTitle}
           </Typography>
         </Toolbar>
       </AppBar>
@@ -76,32 +72,31 @@ const ControllerPage = (props: PropsType) => {
           </AppBar>
           {tabIndex === 0 && (
             <Paper style={{ height: "100%" }}>
-              {!eventStatus && (
+              {event.status === 'not_started' && (
                 <div>
-                  <QRCode value={`${urlBase}/${eventKey}/member`} />
+                  <QRCode value={`${urlBase}/${ownerKey}/member`} />
                   <button onClick={beginQuiz}>
                     {quiz.quizTitle}を始める
                   </button>
                 </div>
               )}
 
-              {eventStatus && (
+              {event.status !== 'not_started' && (
                 <div>
-                  <QuizContent eventStatus={eventStatus} />
+                  <QuizContent event={event} />
                   <button onClick={continueQuiz} disabled={isLastQuizContent}>次のクイズに進む</button>
                   <br/><br/><br/>
                   <button onClick={finishQuiz}>クイズを終える</button><br/>
-                  <button onClick={resetMembers}>参加者をリセットする</button>
                 </div>
               )}
             </Paper>
           )}
-          {tabIndex === 1 && (
+          {/* {tabIndex === 1 && (
             <Paper style={{ height: "100%" }}>
               <ul>
-                {eventStatus && _.chain(members)
+                {_.chain(members)
                   .countBy((m: MemberDataType) => {
-                    const choice = m.quiz && m.quiz.answers[eventStatus.quizContentIndex] && m.quiz.answers[eventStatus.quizContentIndex].choice
+                    const choice = m.quiz && m.quiz.answers[event.quizContentIndex] && m.quiz.answers[event.quizContentIndex].choice
                     return choice || '未回答'
                   })
                   .map((count, choice) => ({ choice, count }))
@@ -150,7 +145,7 @@ const ControllerPage = (props: PropsType) => {
           {tabIndex === 3 && (
             <Paper style={{ height: "100%" }}>
             </Paper>
-          )}
+          )} */}
         </Grid>
       </Grid>
     </BasicTemplate>

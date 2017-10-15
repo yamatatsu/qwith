@@ -1,12 +1,12 @@
 // @flow
 import React from 'react'
-import type { EventStatusDataType } from '../../types'
+import type { EventDataType } from '../../types'
 
 
-type PropsType = { eventStatus: EventStatusDataType }
+type PropsType = { event: EventDataType }
 
-const QuizContent = ({ eventStatus }: PropsType) => {
-  const { quizContentIndex, quizContent, quizContentIndexMax } = eventStatus
+const QuizContent = ({ event }: PropsType) => {
+  const { quizContentIndex, quizContent, quizContentIndexMax } = event
 
   return (
     <div>

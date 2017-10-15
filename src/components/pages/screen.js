@@ -4,12 +4,12 @@ import QRCode from  'qrcode.react'
 import Grid from 'material-ui/Grid';
 import Paper from 'material-ui/Paper'
 import BasicTemplate from '../templates/basic'
-import type { EventKeyType } from '../../types'
+import type { OwnerKeyType } from '../../types'
 
 type QRPropsType = {
-  eventKey: EventKeyType,
+  owner: OwnerKeyType,
 }
-export const QR = ({ eventKey }: QRPropsType) => {
+export const QR = ({ owner }: QRPropsType) => {
   const urlBase: string = process.env.REACT_APP_URL_BASE || ''
   return (
     <BasicTemplate>
@@ -17,7 +17,7 @@ export const QR = ({ eventKey }: QRPropsType) => {
       <Grid container justify="center">
         <Grid>
           <Paper style={{ padding: 20 }}>
-            <QRCode value={`${urlBase}/${eventKey}/member`} size={500} />
+            <QRCode value={`${urlBase}/${owner}/member`} size={500} />
           </Paper>
         </Grid>
       </Grid>

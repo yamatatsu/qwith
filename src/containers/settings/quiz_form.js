@@ -8,7 +8,7 @@ import TextField from '../../components/atoms/text_field'
 import RadioField from '../../components/atoms/radio_field'
 import type { QuizDataType } from '../../types'
 
-type PropsType = { quiz: ?QuizDataType, saveQuiz: (quiz: QuizDataType) => void }
+type PropsType = { quiz?: ?QuizDataType, saveQuiz: (quiz: QuizDataType) => void }
 
 export default ({ quiz, saveQuiz }: PropsType) => {
   return (

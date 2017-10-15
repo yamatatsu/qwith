@@ -4,9 +4,9 @@ import type { ComponentType } from 'react'
 
 import { observeMember, getMemberKey } from '../../infrastructure/database'
 
-import type { MatchType, EventKeyType, MemberKeyType, MemberDataType } from '../../types'
+import type { OwnerKeyType, MemberKeyType, MemberDataType } from '../../types'
 
-type PropsType = { match: MatchType<{ eventKey: EventKeyType }> }
+type PropsType = { ownerKey: OwnerKeyType }
 type StateType = {
   memberKey: MemberKeyType | 'not_creaded',
   member: ?MemberDataType | 'not_feached',
@@ -18,12 +18,13 @@ export default (WrappedComponent: ComponentType<*>): ComponentType<*> => {
       memberKey: 'not_creaded',
       member: 'not_feached',
     }
+    remove = null
 
-    componentWillMount() {
-      const { eventKey } = this.props.match.params
-      const memberKey = getMemberKey(eventKey)
+    componentDidMount() {
+      const { ownerKey } = this.props
+      const memberKey = getMemberKey(ownerKey)
 
-      observeMember(eventKey, memberKey, (member) => {
+      this.remove = observeMember(ownerKey, memberKey, (member) => {
         this.setState({ ...this.state, member, memberKey })
       })
     }

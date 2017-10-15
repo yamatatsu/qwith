@@ -5,15 +5,13 @@ import Cookies from 'js-cookie'
 
 import type {
   OwnerKeyType,
-  EventKeyType,
+  QuizKeyType,
   MemberKeyType,
 
-  OwnerDataType,
   EventDataType,
+  QuizesDataType,
   QuizDataType,
-  MembersDataType,
   MemberDataType,
-  EventStatusDataType,
   AnswerDataType
 } from '../types'
 
@@ -22,73 +20,76 @@ const ref = firebaseApp.database().ref()
 const getOwnerRef = (ownerKey: OwnerKeyType) =>
   ref.child(`owners/${ownerKey}`)
 
-const getEventStatusRef = (eventKey: EventKeyType) =>
-  ref.child(`eventStatus/${eventKey}`)
+const getQuizesRef = (ownerKey: OwnerKeyType) =>
+  getOwnerRef(ownerKey).child('quizes')
 
-const getMembersRef = (eventKey: EventKeyType) =>
-  ref.child(`members/${eventKey}`)
+const getEventRef = (ownerKey: OwnerKeyType) =>
+  getOwnerRef(ownerKey).child('event')
 
-const getMemberRef = (eventKey: EventKeyType, memberKey: MemberKeyType) =>
-  getMembersRef(eventKey).child(`${memberKey}`)
+const getMembersRef = (ownerKey: OwnerKeyType) =>
+  getOwnerRef(ownerKey).child('members')
 
-const getAnswersRef = (eventKey: EventKeyType, memberKey: MemberKeyType) =>
-  getMemberRef(eventKey, memberKey).child(`quiz/answers`)
+const getAnswersRef = (ownerKey: OwnerKeyType) =>
+  getOwnerRef(ownerKey).child('answers')
 
-export const observeOwner = (ownerKey: OwnerKeyType, callback: (owner: OwnerDataType) => void) => {
-  getOwnerRef(ownerKey).on('value', (snapshot) => {
-    callback(snapshot.val())
+
+const getMemberRef = (ownerKey: OwnerKeyType, memberKey: MemberKeyType) =>
+  getMembersRef(ownerKey).child(memberKey)
+
+export const observeQuizes = (ownerKey: OwnerKeyType, callback: (quizes: QuizesDataType) => void) => {
+  return getQuizesRef(ownerKey).on('value', (snapshot) => {
+    snapshot && callback(snapshot.val())
   })
 }
-export const observeEventStatus = (eventKey: EventKeyType, callback: (eventStatus: EventStatusDataType) => void) => {
-  getEventStatusRef(eventKey).on('value', (snapshot) => {
-    callback(snapshot.val())
+export const observeEvent = (ownerKey: OwnerKeyType, callback: (event: EventDataType) => void) => {
+  return getEventRef(ownerKey).on('value', (snapshot) => {
+    snapshot && callback(snapshot.val())
   })
 }
-export const observeMembers = (eventKey: EventKeyType, callback: (member: MembersDataType) => void) => {
-  getMembersRef(eventKey).on('value', (snapshot) => {
-    callback(snapshot.val())
-  })
-}
-export const observeMember = (eventKey: EventKeyType, memberKey: MemberKeyType, callback: (member: MemberDataType) => void) => {
-  getMemberRef(eventKey, memberKey).on('value', (snapshot) => {
-    callback(snapshot.val())
+// export const observeMembers = (ownerKey: OwnerKeyType, callback: (member: MembersDataType) => void) => {
+//   getMembersRef(ownerKey).on('value', (snapshot) => {
+//     snapshot && callback(snapshot.val())
+//   })
+// }
+export const observeMember = (ownerKey: OwnerKeyType, memberKey: MemberKeyType, callback: (member: MemberDataType) => void) => {
+  return getMemberRef(ownerKey, memberKey).on('value', (snapshot) => {
+    snapshot && callback(snapshot.val())
   })
 }
 
-export const setEvent = (ownerKey: OwnerKeyType, eventKey: EventKeyType, event: EventDataType) => {
-  getOwnerRef(ownerKey).child(`events/${eventKey}`).set(event)
+export const setQuiz = (ownerKey: OwnerKeyType, quizKey: QuizKeyType, quiz: QuizDataType) => {
+  getOwnerRef(ownerKey).child(`quizes/${quizKey}`).set(quiz)
 }
-export const addEvent = (ownerKey: OwnerKeyType, event: EventDataType) => {
-  const eventKey: EventKeyType = getOwnerRef(ownerKey).child(`events`).push().key
-  setEvent(ownerKey, eventKey, event)
+export const createQuiz = (ownerKey: OwnerKeyType, quiz: QuizDataType) => {
+  const quizKey = genNewQuizKey(ownerKey)
+  setQuiz(ownerKey, quizKey, quiz)
 }
-export const setQuiz = (ownerKey: OwnerKeyType, eventKey: EventKeyType, quiz: QuizDataType) => {
-  getOwnerRef(ownerKey).child(`quizes/${eventKey}`).set(quiz)
+export const setEvent = (ownerKey: OwnerKeyType, event: EventDataType) => {
+  getEventRef(ownerKey).set(event)
 }
-export const setEventStatus = (eventKey: EventKeyType, eventStatus: EventStatusDataType) => {
-  getEventStatusRef(eventKey).set(eventStatus)
+export const resetEvent = (ownerKey: OwnerKeyType) => {
+  getEventRef(ownerKey).set(null)
+  getMembersRef(ownerKey).set(null)
 }
-export const resetEventStatus = (eventKey: EventKeyType) => {
-  getEventStatusRef(eventKey).set(null)
+export const setMember = (ownerKey: OwnerKeyType, memberKey: MemberKeyType, member: MemberDataType) => {
+  getMemberRef(ownerKey, memberKey).set(member)
 }
-export const setMember = (eventKey: EventKeyType, memberKey: MemberKeyType, member: MemberDataType) => {
-  getMemberRef(eventKey, memberKey).set(member)
-}
-export const setAnswer = (eventKey: EventKeyType, memberKey: MemberKeyType, quizContentIndex: number, answer: AnswerDataType) => {
-  getAnswersRef(eventKey, memberKey).update({ [quizContentIndex]: answer })
-}
-export const resetMembers = (eventKey: EventKeyType) => {
-  getMembersRef(eventKey).set(null)
+export const setAnswer = (ownerKey: OwnerKeyType, answer: AnswerDataType) => {
+  getAnswersRef(ownerKey).set(answer)
 }
 
-const pushMember = (eventKey: EventKeyType) => {
-  return getMembersRef(eventKey).push()
+const genNewQuizKey = (ownerKey: OwnerKeyType): QuizKeyType => {
+  return getQuizesRef(ownerKey).push().key
+}
+
+const pushMember = (ownerKey: OwnerKeyType) => {
+  return getMembersRef(ownerKey).push()
 }
 
 // TODO: Cookie扱っててココにあるべきじゃない気がするけど、domain objectsをどう書くかの構想が立つまで雑に実装
 const MEMBER_KEY_COOKIE_NAME = 'mk'
-export const getMemberKey = (eventKey: EventKeyType) => {
-  const memberKey: MemberKeyType = Cookies.get(MEMBER_KEY_COOKIE_NAME) || pushMember(eventKey).key
+export const getMemberKey = (ownerKey: OwnerKeyType) => {
+  const memberKey: MemberKeyType = Cookies.get(MEMBER_KEY_COOKIE_NAME) || pushMember(ownerKey).key
   Cookies.set(MEMBER_KEY_COOKIE_NAME, memberKey, { expires: 30 })
   return memberKey
 }

@@ -3,48 +3,38 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import _map from 'lodash/map'
 import BasicTemplate from '../templates/basic'
-import EventForm from '../../containers/settings/event_form'
 import QuizForm from '../../containers/settings/quiz_form'
 
-import type { EventKeyType, OwnerDataType, EventDataType, QuizDataType } from '../../types'
+import type { QuizKeyType, QuizesDataType, QuizDataType } from '../../types'
 
 type PropsType = {
-  owner: ?OwnerDataType,
-  isOpenNewEvent: boolean,
-  saveEvent: (eventKey: EventKeyType) => (event: EventDataType) => void,
-  createEvent: () => (event: EventDataType) => void,
-  saveQuiz: (eventKey: EventKeyType) => (quiz: QuizDataType) => void,
-  openNewEvent: Function,
+  quizes: ?QuizesDataType,
+  saveQuiz: (quizKey?: QuizKeyType) => (quiz: QuizDataType) => void,
+  startEvent: (quizKey: QuizKeyType, quiz: QuizDataType) => () => void,
 }
-export default ({ owner, isOpenNewEvent, saveEvent, createEvent, saveQuiz, openNewEvent }: PropsType) => {
+export default ({ quizes, saveQuiz, startEvent }: PropsType) => {
   return (
     <BasicTemplate>
       <h1>Settings</h1>
-      <button onClick={openNewEvent}>イベント作成</button>
 
-      {isOpenNewEvent && (
-        <EventForm event={{ eventTitle: '' }} saveEvent={createEvent()} />
-      )}
-
-      {owner && _map(owner.events, (event, eventKey) => {
-        const quiz = owner && owner.quizes && owner.quizes[eventKey]
-        return <Event key={eventKey} {...{ eventKey, event, quiz, saveEvent: saveEvent(eventKey), saveQuiz: saveQuiz(eventKey) }}/>
+      {_map(quizes, (quiz, quizKey) => {
+        return <Event key={quizKey} {...{ quiz, saveQuiz: saveQuiz(quizKey), startEvent: startEvent(quizKey, quiz) }}/>
       })}
+
+      <h4>新しいクイズ</h4>
+      <QuizForm saveQuiz={saveQuiz()} />
     </BasicTemplate>
   )
 }
 
 type EventPropsType = {
-  eventKey: EventKeyType,
-  event: EventDataType,
   quiz: ?QuizDataType,
-  saveEvent: (event: EventDataType) => void,
   saveQuiz: (quiz: QuizDataType) => void,
+  startEvent: () => void,
 }
-const Event = ({ eventKey, event, quiz, saveEvent, saveQuiz }: EventPropsType) => (
+const Event = ({ quiz, saveQuiz, startEvent }: EventPropsType) => (
   <div>
-    <EventForm event={event} saveEvent={saveEvent} />
-    <Link to={`/${eventKey}/controller`}>
+    <Link to={'/controller'} onClick={startEvent}>
       <button>始める</button>
     </Link>
     <br/>
