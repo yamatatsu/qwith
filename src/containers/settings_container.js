@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react'
-import { setQuiz, createQuiz, setEvent } from '../infrastructure/database'
+import { getQuizesDb, getEventDb } from '../infrastructure/database'
 import withUser from './observers/user_observer'
 import withQuizes from './observers/quizes_observer'
 import Page from '../components/pages/settings'
@@ -17,16 +17,19 @@ class Container extends Component<PropsType, StateType> {
   render() {
     const { ownerKey, quizes } = this.props
 
+    const quizesDb = getQuizesDb(ownerKey)
+    const eventDb = getEventDb(ownerKey)
+
     const saveQuiz = (quizKey?: QuizKeyType) => (quiz: QuizDataType) => {
       if (quizKey) {
-        setQuiz(ownerKey, quizKey, quiz)
+        quizesDb.set(quizKey, quiz)
       } else {
-        createQuiz(ownerKey, quiz)
+        quizesDb.create(quiz)
       }
     }
 
     const startEvent = (quizKey: QuizKeyType, quiz: QuizDataType) => () =>{
-      setEvent(ownerKey, {
+      eventDb.set({
         status: 'no_quiz_started',
         quizKey: quizKey,
         quizContentIndex: 0,

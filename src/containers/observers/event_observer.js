@@ -1,8 +1,7 @@
 // @flow
 import React, { Component } from 'react'
 import type { ComponentType } from 'react'
-
-import { observeEvent } from '../../infrastructure/database'
+import { getEventDb } from '../../infrastructure/database'
 
 import type { OwnerKeyType, EventDataType } from '../../types'
 
@@ -11,21 +10,19 @@ type StateType = { event: ?EventDataType | 'not_feached' }
 
 export default (WrappedComponent: ComponentType<*>): ComponentType<*> => {
   return class EventObserver extends Component<PropsType, StateType> {
-    state = {
-      event: 'not_feached',
-    }
-    remove = null
+    state = { event: 'not_feached' }
+    db = null
 
-    componentDidMount() {
-      const { ownerKey } = this.props
-      this.remove = observeEvent(ownerKey, (event) => {
+    componentWillMount() {
+      this.db = getEventDb(this.props.ownerKey)
+
+      this.db.subscribe((event) => {
         this.setState({ ...this.state, event })
       })
     }
     componentWillUnmount () {
-      this.remove && this.remove()
+      this.db && this.db.unsubscribe()
     }
-
 
     render() {
       const { event } = this.state

@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react'
-import { setMember, setAnswer, TIMESTAMP } from '../infrastructure/database'
+import { getMemberDb, getAnswerDb, TIMESTAMP } from '../infrastructure/database'
 import withEvent from './observers/event_observer'
 import withMember from './observers/member_observer'
 import MemberForm from './member/member_form'
@@ -27,14 +27,17 @@ class MemberContainer extends Component<PropsType, StateType> {
     if (!event) {
       return <div>no event</div>
     }
+
+    const db = getMemberDb(ownerKey, memberKey)
+
     if (!member) {
-      return <MemberForm {...{ saveMember: createSaveMember(ownerKey, memberKey) }} />
+      return <MemberForm {...{ saveMember: db.set }} />
     }
     if (event.status === 'not_started') {
       return <div>クイズ開始までお待ち下さい。</div>
     }
 
-    const answer = createAnswer(ownerKey, memberKey, event.quizContent.uid)
+    const answer = createAnswerFunc(ownerKey, memberKey, event.quizContent.uid)
     return <Page {...{ event, member, answer }} />
   }
 }
@@ -49,9 +52,7 @@ export default matchParamsToProps(withMember(withEvent(MemberContainer)))
 //////////////////////
 // private
 
-const createSaveMember = (ownerKey, memberKey) => (member) => setMember(ownerKey, memberKey, member)
-
-const createAnswer =
-  (ownerKey, memberKey, quizContentUid: QuizContentUidType) =>
-    (choice: ChoiceType) =>
-      setAnswer(ownerKey, { quizContentUid, choice, answeredAt: TIMESTAMP, memberKey })
+const createAnswerFunc = (ownerKey, memberKey, quizContentUid: QuizContentUidType) => {
+  const db = getAnswerDb(ownerKey)
+  return (choice: ChoiceType) => db.set({ quizContentUid, choice, answeredAt: TIMESTAMP, memberKey })
+}

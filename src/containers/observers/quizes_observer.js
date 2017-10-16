@@ -1,8 +1,7 @@
 // @flow
 import React, { Component } from 'react'
 import type { ComponentType } from 'react'
-
-import { observeQuizes } from '../../infrastructure/database'
+import { getQuizesDb } from '../../infrastructure/database'
 
 import type { OwnerKeyType, QuizesDataType } from '../../types'
 
@@ -11,21 +10,19 @@ type StateType = { quizes: ?QuizesDataType | 'not_feached' }
 
 export default (WrappedComponent: ComponentType<*>): ComponentType<*> => {
   return class QuizesObserver extends Component<PropsType, StateType> {
-    state = {
-      quizes: 'not_feached',
-    }
-    remove = null
+    state = { quizes: 'not_feached' }
+    db = null
 
-    componentDidMount() {
-      const { ownerKey } = this.props
-      this.remove = observeQuizes(ownerKey, (quizes) => {
+    componentWillMount() {
+      this.db = getQuizesDb(this.props.ownerKey)
+
+      this.db.subscribe((quizes) => {
         this.setState({ ...this.state, quizes })
       })
     }
     componentWillUnmount () {
-      this.remove && this.remove()
+      this.db && this.db.unsubscribe()
     }
-
 
     render() {
       const { quizes } = this.state

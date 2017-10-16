@@ -2,7 +2,8 @@
 import React, { Component } from 'react'
 import type { ComponentType } from 'react'
 
-import { observeMember, getMemberKey } from '../../infrastructure/database'
+import { getMembersDb, getMemberDb } from '../../infrastructure/database'
+import { getMemberKey, setMemberKey } from '../../infrastructure/cookie'
 
 import type { OwnerKeyType, MemberKeyType, MemberDataType } from '../../types'
 
@@ -18,15 +19,22 @@ export default (WrappedComponent: ComponentType<*>): ComponentType<*> => {
       memberKey: 'not_creaded',
       member: 'not_feached',
     }
-    remove = null
+    db = null
 
-    componentDidMount() {
+    componentWillMount() {
       const { ownerKey } = this.props
-      const memberKey = getMemberKey(ownerKey)
+      const memberKey = getMemberKey() || getMembersDb(ownerKey).createKey()
 
-      this.remove = observeMember(ownerKey, memberKey, (member) => {
+      setMemberKey(memberKey)
+
+      this.db = getMemberDb(ownerKey, memberKey)
+
+      this.db.subscribe((member) => {
         this.setState({ ...this.state, member, memberKey })
       })
+    }
+    componentWillUnmount () {
+      this.db && this.db.unsubscribe()
     }
 
     render() {
