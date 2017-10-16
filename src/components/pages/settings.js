@@ -3,7 +3,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import _map from 'lodash/map'
 import BasicTemplate from '../templates/basic'
-import QuizForm from '../../containers/settings/quiz_form'
+import QuizForm from '../../containers/forms/quiz_form'
 
 import type { QuizKeyType, QuizesDataType, QuizDataType } from '../../types'
 

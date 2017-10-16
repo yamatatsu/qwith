@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import { getMemberDb, getAnswerDb, TIMESTAMP } from '../infrastructure/database'
 import withEvent from './observers/event_observer'
 import withMember from './observers/member_observer'
-import MemberForm from './member/member_form'
+import MemberForm from './forms/member_form'
 import Page from '../components/pages/member'
 
 import type {
