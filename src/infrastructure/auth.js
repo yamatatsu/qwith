@@ -9,9 +9,8 @@ const auth = firebaseApp.auth()
 
 const signInWithPopup = () =>
   auth.signInWithPopup(provider)
-    .then(function(result) {
-      return result.user
-    }).catch(function(error) {
+    .then((result) => result.user)
+    .catch((error) => {
       const { errorCode, errorMessage, email, credential } = error
       console.error(`auth error. errorCode: ${errorCode}, errorMessage: ${errorMessage}, email: ${email}, credential: ${credential}`)
     })
