@@ -29,7 +29,7 @@ export default (WrappedComponent: ComponentType<*>): ComponentType<*> => {
 
       this.db = getMemberDb(ownerKey, memberKey)
 
-      this.db.subscribe((member) => {
+      this.db.subscribe((member: MemberDataType) => {
         this.setState({ ...this.state, member, memberKey })
       })
     }

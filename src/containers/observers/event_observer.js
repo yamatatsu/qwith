@@ -16,7 +16,7 @@ export default (WrappedComponent: ComponentType<*>): ComponentType<*> => {
     componentWillMount() {
       this.db = getEventDb(this.props.ownerKey)
 
-      this.db.subscribe((event) => {
+      this.db.subscribe((event: EventDataType) => {
         this.setState({ ...this.state, event })
       })
     }

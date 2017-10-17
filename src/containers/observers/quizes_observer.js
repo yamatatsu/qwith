@@ -16,7 +16,7 @@ export default (WrappedComponent: ComponentType<*>): ComponentType<*> => {
     componentWillMount() {
       this.db = getQuizesDb(this.props.ownerKey)
 
-      this.db.subscribe((quizes) => {
+      this.db.subscribe((quizes: QuizesDataType) => {
         this.setState({ ...this.state, quizes })
       })
     }
