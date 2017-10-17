@@ -33,7 +33,7 @@ class MemberContainer extends Component<PropsType, StateType> {
     if (!member) {
       return <MemberForm {...{ saveMember: db.set }} />
     }
-    if (event.status === 'not_started') {
+    if (event.status === 'no_quiz_started') {
       return <div>クイズ開始までお待ち下さい。</div>
     }
 
