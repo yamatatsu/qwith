@@ -12,7 +12,7 @@ type PropsType = { quiz?: ?QuizDataType, saveQuiz: (quiz: QuizDataType) => void 
 
 export default ({ quiz, saveQuiz }: PropsType) => {
   return (
-    <Form defaultValues={quiz} onSubmit={saveQuiz}>
+    <Form defaultValues={quiz || { quizTitle: '' }} onSubmit={saveQuiz}>
       {({ values, setValue, submitForm, resetForm, removeValue, addValue }) => (
         <div>
           <IconButton aria-label="Done" color="primary" onClick={submitForm}>
