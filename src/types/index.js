@@ -38,16 +38,12 @@ export type EventDataType = {
   quizContentStartAt: ?number,
 }
 
-export type DataType = {
-  owners: {
-    [ownerKey: OwnerKeyType]: {|
-      quizes: QuizesDataType,
-      event: ?EventDataType,
-      members: ?MembersDataType,
-      answers: ?AnswersDataType,
-    |}
-  }
-}
+export type OwnerDataType = {|
+  event: ?EventDataType,
+  // quizes: QuizesDataType,
+  // members: ?MembersDataType,
+  // answers: ?AnswersDataType,
+|}
 
 export type MatchType<P> = {
   params: P,

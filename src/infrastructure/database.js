@@ -1,5 +1,7 @@
 // @flow
 import * as firebase from 'firebase'
+import 'firebase/firestore'
+import genUUID from 'uuid/v4'
 import firebaseApp from './firebase_app'
 
 import type {
@@ -7,82 +9,102 @@ import type {
   QuizKeyType,
   MemberKeyType,
 
+  OwnerDataType,
   EventDataType,
   QuizesDataType,
   QuizDataType,
   MemberDataType,
   AnswerDataType
 } from '../types'
-type Callback<D> = (obj: D) => void
 
-const getOwnerRef = (ownerKey: OwnerKeyType) =>
-  firebaseApp.database().ref(`owners/${ownerKey}`)
+type CallbackType<D> = (data: D) => void
+type SubscriptionType<D> = {
+  subscribe: (callback: CallbackType<D>) => any,
+  unsubscribe: () => any,
+}
 
+const getOwnerDocRef = (ownerKey: OwnerKeyType) =>
+  firebaseApp.firestore().collection('owners').doc(ownerKey)
 
-export const getEventDb = (ownerKey: OwnerKeyType) => {
-  const ref = getOwnerRef(ownerKey).child('event')
+const genSubscription = (ref): Object => ({
+  subscribe: (callback) => ref.onSnapshot(
+    snapshot => {
+      if (!snapshot) return
+
+      if (snapshot.data) {
+        snapshot.exists && callback(snapshot.data())
+      } else {
+        const docs = []
+        snapshot.forEach(doc => docs.push(doc.data()))
+        callback(docs)
+      }
+    },
+  ),
+  unsubscribe: () => ref.onSnapshot(() => {}),
+})
+
+export const getOwnerDb = (ownerKey: OwnerKeyType) => {
+  const docRef = getOwnerDocRef(ownerKey)
+  const subscription: SubscriptionType<OwnerDataType> = genSubscription(docRef)
 
   return {
-    subscribe: (callback: Callback<EventDataType>) => {
-      return ref.on('value', (snapshot) => {
-        snapshot && callback(snapshot.val())
-      })
-    },
-    unsubscribe: () => ref.off('value'),
-    set: (event: EventDataType) => ref.set(event),
-    deleteAll: () => ref.set(null),
+    ...subscription,
+    setEvent: (event: EventDataType) => docRef.update({ event }),
+    deleteEvent: () => docRef.update({ event: firebase.firestore.FieldValue.delete() }),
   }
 }
 
 export const getQuizesDb = (ownerKey: OwnerKeyType) => {
-  const ref = getOwnerRef(ownerKey).child('quizes')
+  const collectionRef = getOwnerDocRef(ownerKey).collection('quizes')
+  const subscription: SubscriptionType<QuizesDataType> = genSubscription(collectionRef)
 
-  const set = (quizKey: QuizKeyType, quiz: QuizDataType) => {
-    ref.child(quizKey).set(quiz)
-  }
-  const genNewQuizKey = (): QuizKeyType => ref.push().key
+  const fillUid = (quiz: QuizDataType) => ({
+    ...quiz,
+    quizContents: quiz.quizContents && quiz.quizContents.map(c => ({
+      ...c,
+      uid: c.uid || genUUID(),
+    })),
+  })
 
   return {
-    subscribe: (callback: Callback<QuizesDataType>) => {
-      return ref.on('value', (snapshot) => {
-        snapshot && callback(snapshot.val())
-      })
+    ...subscription,
+    set: (quizKey: QuizKeyType, quiz: QuizDataType) => {
+      collectionRef.doc(quizKey).set(fillUid(quiz))
     },
-    unsubscribe: () => ref.off('value'),
-    set,
-    create: (quiz: QuizDataType) => set(genNewQuizKey(), quiz),
+    add: (quiz: QuizDataType) => {
+      collectionRef.add(fillUid(quiz))
+    },
   }
 }
 
 export const getMembersDb = (ownerKey: OwnerKeyType) => {
-  const ref = getOwnerRef(ownerKey).child('members')
+  const collectionRef = getOwnerDocRef(ownerKey).collection('members')
 
   return {
-    createKey: () => ref.push().key,
-    deleteAll: () => ref.set(null),
+    deleteAll: () => collectionRef.set(null),
   }
 }
 
 export const getMemberDb = (ownerKey: OwnerKeyType, memberKey: MemberKeyType) => {
-  const ref = getOwnerRef(ownerKey).child('members').child(memberKey)
+  const docRef = getOwnerDocRef(ownerKey).collection('members').doc(memberKey)
+  const subscription: SubscriptionType<MemberDataType> = genSubscription(docRef)
 
   return {
-    subscribe: (callback: Callback<MemberDataType>) => {
-      return ref.on('value', (snapshot) => {
-        snapshot && callback(snapshot.val())
-      })
+    ...subscription,
+    set: (member: MemberDataType) => {
+      docRef.set(member)
     },
-    unsubscribe: () => ref.off('value'),
-    set: (member: MemberDataType) => ref.set(member),
   }
 }
 
 export const getAnswerDb = (ownerKey: OwnerKeyType) => {
-  const ref = getOwnerRef(ownerKey).child('answers')
+  const collectionRef = getOwnerDocRef(ownerKey).collection('answers')
 
   return {
-    set: (answer: AnswerDataType) => ref.set(answer),
+    set: (answer: AnswerDataType) => {
+      collectionRef.add(answer)
+    },
   }
 }
 
-export const TIMESTAMP = firebase.database.ServerValue.TIMESTAMP
+export const TIMESTAMP = firebase.firestore.FieldValue.serverTimestamp()

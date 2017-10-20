@@ -1,8 +1,9 @@
 // @flow
 import React, { Component } from 'react'
+import genUUID from 'uuid/v4'
 import type { ComponentType } from 'react'
 
-import { getMembersDb, getMemberDb } from '../../infrastructure/database'
+import { getMemberDb } from '../../infrastructure/database'
 import { getMemberKey, setMemberKey } from '../../infrastructure/cookie'
 
 import type { OwnerKeyType, MemberKeyType, MemberDataType } from '../../types'
@@ -14,7 +15,7 @@ type StateType = {
 }
 
 export default (WrappedComponent: ComponentType<*>): ComponentType<*> => {
-  return class EventStatusObserver extends Component<PropsType, StateType> {
+  return class MemberObserver extends Component<PropsType, StateType> {
     state = {
       memberKey: 'not_creaded',
       member: 'not_feached',
@@ -22,12 +23,11 @@ export default (WrappedComponent: ComponentType<*>): ComponentType<*> => {
     db = null
 
     componentWillMount() {
-      const { ownerKey } = this.props
-      const memberKey = getMemberKey() || getMembersDb(ownerKey).createKey()
+      const memberKey = getMemberKey() || genUUID()
 
       setMemberKey(memberKey)
 
-      this.db = getMemberDb(ownerKey, memberKey)
+      this.db = getMemberDb(this.props.ownerKey, memberKey)
 
       this.db.subscribe((member: MemberDataType) => {
         this.setState({ ...this.state, member, memberKey })

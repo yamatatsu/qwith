@@ -1,9 +1,9 @@
 // @flow
 import React, { Component } from 'react'
 import type { ComponentType } from 'react'
-import { getEventDb } from '../../infrastructure/database'
+import { getOwnerDb } from '../../infrastructure/database'
 
-import type { OwnerKeyType, EventDataType } from '../../types'
+import type { OwnerKeyType, OwnerDataType, EventDataType } from '../../types'
 
 type PropsType = { ownerKey: OwnerKeyType }
 type StateType = { event: ?EventDataType | 'not_feached' }
@@ -14,10 +14,10 @@ export default (WrappedComponent: ComponentType<*>): ComponentType<*> => {
     db = null
 
     componentWillMount() {
-      this.db = getEventDb(this.props.ownerKey)
+      this.db = getOwnerDb(this.props.ownerKey)
 
-      this.db.subscribe((event: EventDataType) => {
-        this.setState({ ...this.state, event })
+      this.db.subscribe((owner: OwnerDataType) => {
+        this.setState({ ...this.state, event: owner.event })
       })
     }
     componentWillUnmount () {

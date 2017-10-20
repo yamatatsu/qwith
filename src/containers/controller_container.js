@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react'
-import { getEventDb, getMembersDb, TIMESTAMP } from '../infrastructure/database'
+import { getOwnerDb, getMembersDb, TIMESTAMP } from '../infrastructure/database'
 import withUser from './observers/user_observer'
 import withEvent from './observers/event_observer'
 import Page from '../components/pages/controller'
@@ -52,16 +52,18 @@ export default withUser(withEvent(ControllerContainer))
 // private
 
 const createCommands = (ownerKey: OwnerKeyType, event: EventDataType) => {
-  const eventDb = getEventDb(ownerKey)
+  const ownerDb = getOwnerDb(ownerKey)
   const membersDb = getMembersDb(ownerKey)
 
   const changeQuiz = (index: number) => {
-    eventDb.set({
-      ...event,
-      status: 'on',
-      quizContentIndex: index,
-      quizContent: event.quiz.quizContents[index],
-      quizContentStartAt: TIMESTAMP,
+    ownerDb.set({
+      event: {
+        ...event,
+        status: 'on',
+        quizContentIndex: index,
+        quizContent: event.quiz.quizContents[index],
+        quizContentStartAt: TIMESTAMP,
+      }
     })
   }
 
@@ -71,7 +73,7 @@ const createCommands = (ownerKey: OwnerKeyType, event: EventDataType) => {
     beginQuiz: () => changeQuiz(0),
     continueQuiz: () => changeQuiz(nextQuizContentIndex),
     finishQuiz: () => {
-      eventDb.deleteAll()
+      ownerDb.deleteAll()
       membersDb.deleteAll()
     },
   }

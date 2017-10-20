@@ -12,8 +12,15 @@ type PropsType = { quiz?: ?QuizDataType, saveQuiz: (quiz: QuizDataType) => void 
 
 export default ({ quiz, saveQuiz }: PropsType) => {
   return (
-    <Form defaultValues={quiz || { quizTitle: '' }} onSubmit={saveQuiz}>
-      {({ values, setValue, submitForm, resetForm, removeValue, addValue }) => (
+    <Form
+      defaultValues={quiz || { quizTitle: '' }}
+      onSubmit={saveQuiz}
+      validate={({ quizTitle, quizContents }) => ({
+        quizTitle: !quizTitle ? 'クイズタイトルを入力してください。' : undefined,
+        quizContents: !quizContents ? 'クイズを追加してください。' : undefined,
+      })}
+    >
+      {({ values, setValue, submitForm, resetForm, removeValue, addValue, getError }) => (
         <div>
           <IconButton aria-label="Done" color="primary" onClick={submitForm}>
             <DoneIcon />
@@ -25,9 +32,8 @@ export default ({ quiz, saveQuiz }: PropsType) => {
           <TextField field="quizTitle" label="クイズタイトル" />
 
           <div>
-            {!values.quizContents ? (
-              <em>クイズを追加してください</em>
-            ) : values.quizContents.map((quizContents, i) => (
+            {getError('quizContents') && <em>{getError('quizContents')}</em>}
+            {values.quizContents && values.quizContents.map((quizContents, i) => (
               <div key={i}>
                 <TextField field={`quizContents.${i}.qText`} label="問題" />
                 {['a', 'b', 'c', 'd'].map(choice => (
@@ -44,7 +50,10 @@ export default ({ quiz, saveQuiz }: PropsType) => {
           </div>
 
           <div>
-            <button type='button' onClick={() => addValue('quizContents', {})} >
+            <button
+              type='button'
+              onClick={() => addValue('quizContents', { qText: '', a: '', b: '', c: '', d: '', correctChoice: '' })}
+            >
               クイズを追加
             </button>
           </div>
